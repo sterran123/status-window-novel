@@ -30,13 +30,27 @@ async function init(){
   $('#btn-status').onclick=()=>{ $('#status-body').textContent=currentStatusText(); $('#status-panel').hidden=false; };
   $('#btn-close-status').onclick=()=>$('#status-panel').hidden=true;
   $('#status-panel').addEventListener('click',e=>{if(e.target.id==='status-panel')$('#status-panel').hidden=true;});
-  // 표지 → 이어보기/시작/처음부터 + 등장인물 패널
+  // 표지 → 이어보기(바로 재개)/시작·처음부터(읽기 설정 안내 후 시작) + 등장인물 패널
   $('#btn-cover-main').onclick=()=>{
-    $('#cover').hidden=true;
-    if(SAVE_REC.pos&&byId(SAVE_REC.pos)){NODE=byId(SAVE_REC.pos);updateProgress();advance();}
-    else{resetProgress();NODE=byId(STORY.start);advance();}
+    if(SAVE_REC.pos&&byId(SAVE_REC.pos)){
+      $('#cover').hidden=true;NODE=byId(SAVE_REC.pos);updateProgress();advance();
+    }else openIntro();
   };
-  $('#btn-cover-fresh').onclick=()=>{ $('#cover').hidden=true; $('#btn-restart').click(); };
+  $('#btn-cover-fresh').onclick=()=>openIntro();
+  // 읽기 설정 안내 — 모드/속도 고르고 시작
+  const pick=(a,on)=>{a.forEach(b=>b.classList.toggle('on',b===on));};
+  $('#intro-auto').onclick=()=>{pick([$('#intro-auto'),$('#intro-manual')],$('#intro-auto'));
+    $('#intro-speed-row').hidden=false;};
+  $('#intro-manual').onclick=()=>{pick([$('#intro-auto'),$('#intro-manual')],$('#intro-manual'));
+    $('#intro-speed-row').hidden=true;};
+  const spd=[$('#intro-slow'),$('#intro-normal'),$('#intro-fast')];
+  spd.forEach(b=>b.onclick=()=>pick(spd,b));
+  $('#btn-intro-start').onclick=()=>{
+    setAuto($('#intro-auto').classList.contains('on'));
+    setSpeed($('#intro-slow').classList.contains('on')?1.4
+      :$('#intro-fast').classList.contains('on')?0.75:1);
+    $('#intro-panel').hidden=true;$('#cover').hidden=true;$('#btn-restart').click();
+  };
   $('#btn-cover-cast').onclick=()=>openCast();
   $('#btn-open-cast').onclick=()=>openCast();
   $('#btn-close-cast').onclick=()=>$('#cast-panel').hidden=true;
@@ -49,7 +63,7 @@ async function init(){
     else if(!AUTO&&nextBtn.style.display!=='none'){advance();}
   });
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(!$('#settings-panel').hidden)closeSettings();$('#status-panel').hidden=true;$('#cast-panel').hidden=true;$('#illus-light').hidden=true;return;}
+    if(e.key==='Escape'){if(!$('#settings-panel').hidden)closeSettings();$('#status-panel').hidden=true;$('#cast-panel').hidden=true;$('#illus-light').hidden=true;$('#intro-panel').hidden=true;return;}
     if(modalOpen())return;
     // 스페이스·엔터·→·↓·볼륨아래(모바일)로 다음 문장
     if([' ','Enter','ArrowRight','ArrowDown','AudioVolumeDown','VolumeDown'].includes(e.key)||e.keyCode===25){
@@ -85,16 +99,27 @@ function syncSettingsUI(){
   $('#set-speed-fast').classList.toggle('on',SETTINGS.speed===0.75);
   $('#set-speed-normal').classList.toggle('on',!SETTINGS.speed||SETTINGS.speed===1);
   $('#set-speed-slow').classList.toggle('on',SETTINGS.speed===1.4);
-  $('#set-note').textContent=(AUTO
+  $('#set-note').textContent=AUTO
     ?'자동: 글자 수에 맞춰 문장이 이어지고, 선택지·엔딩에서 멈춥니다. 탭하면 즉시 넘어갑니다.'
-    :'수동: 클릭·탭·스페이스·→·↓ 키로 넘깁니다. 모바일은 볼륨 아래 키도 됩니다(기기에 따라 다름).')
-    +'\n\n바꾼 이름은 다음 문장부터 적용되고 이 브라우저에 저장됩니다.';
+    :'수동: 클릭·탭·스페이스·→·↓ 키로 넘깁니다. 모바일은 볼륨 아래 키도 됩니다(기기에 따라 다름).';
 }
-function modalOpen(){return !$('#settings-panel').hidden||!$('#cover').hidden||!$('#cast-panel').hidden||!$('#illus-light').hidden;}
-function openSettings(){syncSettingsUI();buildNameFields();cancelTimer();$('#settings-panel').hidden=false;}
+function modalOpen(){return !$('#settings-panel').hidden||!$('#cover').hidden||!$('#cast-panel').hidden||!$('#illus-light').hidden||!$('#intro-panel').hidden;}
+function openSettings(){syncSettingsUI();cancelTimer();$('#settings-panel').hidden=false;}
 function closeSettings(){$('#settings-panel').hidden=true;
   if(AUTO&&nextBtn.style.display!=='none')scheduleNext(lastNode());}
 // 표지 — 이어보기 지점·읽은 엔딩을 버튼에 반영
+function openIntro(){
+  // 안내 화면은 저장된 현재 설정을 반영해 둔다
+  const isAuto=SETTINGS.auto!==false;
+  $('#intro-auto').classList.toggle('on',isAuto);
+  $('#intro-manual').classList.toggle('on',!isAuto);
+  $('#intro-speed-row').hidden=!isAuto;
+  const s=SETTINGS.speed;
+  $('#intro-slow').classList.toggle('on',s===1.4);
+  $('#intro-normal').classList.toggle('on',!s||s===1);
+  $('#intro-fast').classList.toggle('on',s===0.75);
+  $('#intro-panel').hidden=false;
+}
 function showCover(rec){
   const n=rec&&rec.pos?byId(rec.pos):null;
   const main=$('#btn-cover-main'), fresh=$('#btn-cover-fresh');
@@ -139,44 +164,7 @@ function openCast(){
 function cancelTimer(){if(TIMER){clearTimeout(TIMER);TIMER=null;}}
 function lastNode(){return HISTORY[HISTORY.length-1];}
 
-/* ── 인물 이름 바꾸기 (독자 지정 → 표시 시 치환, 저장됨) ── */
-const NAME_FIELDS=[
-  {key:'권지혁',label:'주인공',also:['지혁']},
-  {key:'친구',label:'어린 시절 친구',notAfter:'밥'},   // '밥친구'(앱 이름)는 제외
-  {key:'어머니',label:'어머니'},
-  {key:'아버지',label:'아버지'},
-  {key:'누나',label:'누나'},
-  {key:'태윤',label:'혼밥비서 팀원'},
-  {key:'태우',label:'혼밥비서 팀원'},
-  {key:'윤재목',label:'리추얼 부장님'},
-  {key:'눈꽃',label:'채팅방 유저'},
-  {key:'은우',label:'채팅방 유저'},
-  {key:'민재',label:'채팅방 유저'},
-];
-// 아리아는 'ARIA = A Reader, In the Archives' 약자가 CH12 반전 소재라 고정
-function applyNames(t){
-  const nm=SETTINGS.names;if(!nm||!t)return t;
-  for(const f of NAME_FIELDS){
-    const v=nm[f.key];if(!v)continue;
-    if(f.notAfter)t=t.replace(new RegExp(`(?<!${f.notAfter})${f.key}`,'g'),v);
-    else t=t.split(f.key).join(v);
-    for(const a of f.also||[])t=t.split(a).join(v);
-  }
-  return t;
-}
-function disp(t){return applyNames(t)}
-function buildNameFields(){
-  const g=$('#name-fields');g.innerHTML='';
-  NAME_FIELDS.forEach(f=>{
-    const d=document.createElement('div');d.className='name-field';
-    const l=document.createElement('label');l.textContent=`${f.label} (${f.key})`;
-    const i=document.createElement('input');i.placeholder=f.key;i.maxLength=12;
-    i.value=(SETTINGS.names||{})[f.key]||'';
-    i.oninput=()=>{SETTINGS.names=SETTINGS.names||{};const v=i.value.trim().slice(0,12);
-      if(v)SETTINGS.names[f.key]=v;else delete SETTINGS.names[f.key];saveSettings();};
-    d.append(l,i);g.appendChild(d);
-  });
-}
+function disp(t){return t}
 
 // 문장마다 다른 읽기 시간 — 길이·종류·문장부호를 반영, 설정의 읽기 속도로 조절
 function delayFor(n){

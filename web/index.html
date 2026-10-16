@@ -79,10 +79,6 @@
         <button id="set-speed-slow">천천히</button>
       </div>
     </div>
-    <div class="set-row">
-      <span class="set-label">인물 이름 바꾸기 <em>비우면 원래 이름</em></span>
-      <div id="name-fields" class="name-grid"></div>
-    </div>
     <div class="set-note" id="set-note"></div>
     <button id="btn-open-cast" style="margin-bottom:9px">등장인물 보기</button>
     <button id="btn-close-settings">닫기</button>
@@ -91,6 +87,28 @@
 
 <aside id="illus-light" class="modal illus-light" hidden>
   <figure><img id="illus-light-img" alt="삽화 크게 보기"><figcaption id="illus-light-cap"></figcaption></figure>
+</aside>
+
+<aside id="intro-panel" class="modal intro-panel" hidden>
+  <div class="modal-card intro-card">
+    <h3>어떻게 읽으시겠어요?</h3>
+    <div class="intro-mode">
+      <button id="intro-auto" class="intro-opt on">
+        <b>자동으로 읽기</b><span>선택지가 나올 때까지 글이 알아서 넘어갑니다</span>
+      </button>
+      <button id="intro-manual" class="intro-opt">
+        <b>직접 넘기기</b><span>누르거나 키로 한 장면씩 넘깁니다</span>
+      </button>
+    </div>
+    <div id="intro-speed-row">
+      <div class="intro-q">읽기 속도는 어느 정도인가요?</div>
+      <button class="intro-opt" id="intro-slow"><b>저는 천천히 읽어요</b><span>문장 사이에 여유 있게 쉽니다</span></button>
+      <button class="intro-opt on" id="intro-normal"><b>보통이에요</b><span>읽을 만큼 머물고 넘어갑니다</span></button>
+      <button class="intro-opt" id="intro-fast"><b>조금 빠르게 읽어요</b><span>술술 넘어갑니다</span></button>
+    </div>
+    <div class="intro-note">모드와 속도는 읽는 중에도 설정에서 바꿀 수 있습니다</div>
+    <button id="btn-intro-start" class="primary">읽기 시작</button>
+  </div>
 </aside>
 
 <aside id="cast-panel" class="modal" hidden>
