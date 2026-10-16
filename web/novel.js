@@ -1,6 +1,6 @@
 // 채팅형 인터랙티브 소설 엔진 — story/story.json (tools/build.js 생성물)
 let STORY=null, NODE=null, CHAPTER_SEEN=new Set(), HISTORY=[];
-let AUTO=true, TIMER=null;
+let AUTO=true, TIMER=null, CURRENT_ILLUS=null, RENDER_LOCK=false;
 let SETTINGS={auto:true,theme:'dark'};
 let SAVE_REC={pos:null,endings:[]};
 const $=s=>document.querySelector(s);
@@ -62,7 +62,8 @@ function applyTheme(){document.documentElement.dataset.theme=SETTINGS.theme||'da
 function setTheme(t){SETTINGS.theme=t;saveSettings();applyTheme();syncSettingsUI();}
 function setAuto(v){AUTO=!!v;SETTINGS.auto=AUTO;saveSettings();syncAutoUI();syncSettingsUI();cancelTimer();
   if(AUTO&&!modalOpen()&&nextBtn.style.display!=='none')scheduleNext(lastNode());}
-function syncAutoUI(){$('#btn-auto').textContent=AUTO?'⏸ 자동':'▶ 수동';$('#btn-auto').classList.toggle('off',!AUTO);}
+function syncAutoUI(){$('#btn-auto').textContent=AUTO?'⏸ 자동':'▶ 수동';$('#btn-auto').classList.toggle('off',!AUTO);
+  nextBtn.classList.toggle('auto-hidden',AUTO);}
 function syncSettingsUI(){
   $('#set-auto').classList.toggle('on',AUTO);
   $('#set-manual').classList.toggle('on',!AUTO);
@@ -190,9 +191,41 @@ function showChapter(ch){
   el('chapter-banner',`제 ${+c.id.slice(2)}장 — ${esc(c.title)}`);
 }
 
+// 이전 상태창과 비교해 바뀐 줄·새 줄만 남기는 요약 렌더 (전체는 상단 ▦ 버튼)
+function prevStatusText(n){
+  for(let k=idx(n)-1;k>=0;k--)if(STORY.nodes[k].type==='status')return STORY.nodes[k].display;
+  return null;
+}
+function statusCompactHTML(cur,prev){
+  const pl=prev?new Set(prev.split('\n').map(s=>s.trim()).filter(Boolean)):new Set();
+  const lines=[];let sec=null;
+  for(const raw of cur.split('\n')){
+    const t=raw.trim();if(!t)continue;
+    if(/^\[.+\]$/.test(t)){sec={h:t,items:[]};lines.push(sec);continue}
+    if(!pl.has(t)||t.includes('→'))(sec?sec.items:lines).push(t);
+  }
+  const kept=lines.filter(s=>s.items?s.items.length:true);
+  let html=kept.length?kept.map(s=>s.h
+    ?[`<span class="sec">${esc(s.h)}</span>`,...s.items.map(i=>`<span class="delta">${esc(disp(i))}</span>`)].join('<br>')
+    :`<span class="delta">${esc(disp(s))}</span>`).join('<br>')
+    :'<span class="delta">— 변동 없음 —</span>';
+  return html+'<br><span class="mini">바뀐 부분만 표시 · 전체는 상단 ▦ 상태창</span>';
+}
+
 function render(n){
   HISTORY.push(n);writeSave();
   if(n.chapter)showChapter(n.chapter);
+  // 떠 있는 삽화는 서서히 지우고, 사라진 뒤에 다음 문장을 연다
+  if(CURRENT_ILLUS){
+    const f=CURRENT_ILLUS;CURRENT_ILLUS=null;RENDER_LOCK=true;
+    f.classList.add('out');
+    setTimeout(()=>{f.remove();RENDER_LOCK=false;renderNode(n);},1150);
+    return;
+  }
+  renderNode(n);
+}
+
+function renderNode(n){
   switch(n.type){
     case 'msg':{
       const cls=n.speaker==='나레이션'?'narration':(n.speaker===STORY.protagonist?'me':'other');
@@ -201,14 +234,15 @@ function render(n){
     case 'aria':el('bubble aria','<span class="who">아리아</span>《'+esc(disp(n.text))+'》');break;
     case 'chatline':el('bubble chatline',`<span class="who">${esc(disp(n.speaker))}</span>`+esc(disp(n.text)));break;
     case 'sys':el('bubble sys',esc(disp(n.text)).replace(/\n/g,'<br>'));break;
-    case 'status':el('bubble status',esc(disp(n.display)).replace(/\n/g,'<br>'));break;
+    case 'status':el('bubble status',statusCompactHTML(n.display,prevStatusText(n)));break;
     case 'scene':el('scene-divider','* * *');break;
-    case 'img':el('illus',`<img src="${esc(n.src)}" alt="${esc(disp(n.alt)||'삽화')}" loading="lazy">`+(n.alt?`<figcaption>${esc(disp(n.alt))}</figcaption>`:''));break;
+    case 'img':CURRENT_ILLUS=el('illus',`<img src="${esc(n.src)}" alt="${esc(disp(n.alt)||'삽화')}" loading="lazy">`+(n.alt?`<figcaption>${esc(disp(n.alt))}</figcaption>`:''));break;
     case 'choice':cancelTimer();nextBtn.style.display='none';renderChoice(n);return;
     case 'end':cancelTimer();nextBtn.style.display='none';renderEnd(n);return;
     case 'goto':advance();return;
   }
   nextBtn.style.display='block';
+  nextBtn.classList.toggle('auto-hidden',AUTO);
   scheduleNext(n);
 }
 
@@ -249,7 +283,7 @@ function renderEnd(n){
 }
 
 function advance(){
-  if(!NODE)return;
+  if(!NODE||RENDER_LOCK)return;
   const n=NODE;
   NODE = n.next? byId(n.next) : (STORY.nodes[idx(n)+1]||null);
   updateProgress();
