@@ -1,0 +1,69 @@
+:root{
+  --bg:#0f1115; --panel:#171b22; --bubble:#1f2630; --bubble-me:#2f6df6;
+  --sys:#0d1f16; --sys-border:#2ea86e; --txt:#e8ecf2; --dim:#8a93a3;
+  --accent:#ffb84d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:'Pretendard','Noto Sans KR',system-ui,sans-serif}
+.topbar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;
+  padding:10px 18px;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);border-bottom:1px solid #232a35}
+.brand{font-weight:800;letter-spacing:-.5px}
+.topnav{display:flex;gap:8px}
+.topnav button,.topnav a{background:var(--panel);color:var(--txt);border:1px solid #2a3140;border-radius:8px;
+  padding:6px 12px;font-size:13px;cursor:pointer;text-decoration:none}
+.topnav button:hover,.topnav a:hover{border-color:var(--accent)}
+
+.chat-wrap{max-width:720px;margin:0 auto;padding:24px 14px 140px;display:flex;flex-direction:column;min-height:80vh}
+.chat{display:flex;flex-direction:column;gap:10px}
+.bubble{max-width:82%;padding:12px 15px;border-radius:14px;line-height:1.75;font-size:15.5px;
+  white-space:pre-wrap;animation:pop .25s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.bubble.narration{align-self:center;background:transparent;color:var(--dim);max-width:96%;text-align:center}
+.bubble.me{align-self:flex-end;background:var(--bubble-me);color:#fff;border-bottom-right-radius:4px}
+.bubble.other{align-self:flex-start;background:var(--bubble);border-bottom-left-radius:4px}
+.bubble .who{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
+.bubble.sys{align-self:stretch;max-width:100%;background:var(--sys);border:1px solid var(--sys-border);
+  font-family:'Consolas','D2Coding',monospace;font-size:14px;border-radius:8px}
+.bubble.status{align-self:stretch;max-width:100%;background:#10141c;border:1px dashed var(--accent);
+  font-family:'Consolas','D2Coding',monospace;font-size:14px}
+.chapter-banner{align-self:center;margin:34px 0 18px;padding:8px 22px;border-radius:999px;
+  background:#232a35;font-weight:700;letter-spacing:-.3px;color:var(--accent);border:1px solid #333c4d}
+
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.choices button{padding:14px 16px;border-radius:12px;border:1px solid #2f3a4d;background:var(--panel);
+  color:var(--txt);font-size:15px;cursor:pointer;text-align:left;transition:.15s}
+.choices button:hover{border-color:var(--accent);transform:translateX(4px)}
+.choices button .tag{display:inline-block;margin-right:8px;font-size:11px;color:var(--accent);
+  border:1px solid var(--accent);border-radius:5px;padding:1px 6px;vertical-align:middle}
+
+.next-btn{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:13px 42px;border-radius:999px;
+  border:none;background:var(--bubble-me);color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 22px rgba(47,109,246,.4)}
+.next-btn:hover{filter:brightness(1.12)}
+
+.status-panel{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:20}
+.status-card{background:#0d1420;border:1px solid var(--sys-border);border-radius:14px;padding:22px 28px;
+  min-width:300px;max-width:90%}
+.status-card h3{color:var(--sys-border);margin:0 0 10px;font-family:monospace}
+.status-card pre{font-family:'Consolas','D2Coding',monospace;color:var(--txt);font-size:14px;line-height:1.8}
+.status-card button{margin-top:10px;width:100%;padding:9px;border-radius:8px;border:1px solid #2a3140;
+  background:var(--panel);color:var(--txt);cursor:pointer}
+
+.bubble.aria{align-self:flex-start;background:#141020;border:1px solid #5b4a8a;font-style:italic}
+.bubble.chatline{align-self:flex-start;background:#131a22;border:1px solid #1f2b3a}
+.bubble.chatline::before{content:"-";color:var(--dim);margin-right:6px}
+.scene-divider{align-self:center;color:var(--dim);letter-spacing:1em;margin:26px 0;font-size:13px}
+.end-badge{display:inline-block;font-size:11px;letter-spacing:.3em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:14px}
+.endcard{text-align:center;padding:40px 16px;border:1px solid #333c4d;border-radius:16px;margin-top:30px}
+.endcard h2{margin:0 0 8px}
+.endcard p{color:var(--dim)}
+.end-restart{display:block;margin:18px auto 0;position:static;transform:none}
+
+@media (max-width:560px){
+  .chat-wrap{padding:16px 10px 120px}
+  .bubble{max-width:94%;font-size:15px}
+  .topnav button,.topnav a{padding:5px 8px;font-size:12px}
+  .next-btn{width:calc(100% - 32px);padding:14px 0}
+  .choices button{font-size:14px;padding:13px 12px}
+}

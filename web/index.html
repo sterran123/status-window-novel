@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>상태창이 뜬 날 — 권지혁 이야기</title>
+<link rel="stylesheet" href="novel.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">상태창이 뜬 날</div>
+  <nav class="topnav">
+    <button id="btn-restart" title="처음부터">↺ 처음부터</button>
+    <button id="btn-status" title="상태창">▦ 상태창</button>
+    <a id="btn-manuscript" href="../manuscript.md" download>원고 받기</a>
+  </nav>
+</header>
+
+<main class="chat-wrap">
+  <div id="chat" class="chat" aria-live="polite"></div>
+  <div id="choices" class="choices"></div>
+  <button id="btn-next" class="next-btn">계속 ▶</button>
+</main>
+
+<aside id="status-panel" class="status-panel" hidden>
+  <div class="status-card">
+    <h3>[ 상태창 ]</h3>
+    <pre id="status-body"></pre>
+    <button id="btn-close-status">닫기</button>
+  </div>
+</aside>
+
+<script src="novel.js"></script>
+</body>
+</html>
