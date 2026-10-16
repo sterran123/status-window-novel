@@ -11,9 +11,9 @@ async function init(){
   document.title=`${STORY.title} — 채팅형 소설`;
   $('.brand').firstChild.textContent=STORY.title;
   const saved=loadSave();
-  NODE = saved ? byId(saved) : byId(STORY.start);
+  NODE = (saved && byId(saved)) || byId(STORY.start);
   nextBtn.onclick=()=>{cancelTimer();advance();};
-  $('#btn-restart').onclick=()=>{localStorage.removeItem(SAVE_KEY);chat.innerHTML='';CHAPTER_SEEN.clear();HISTORY=[];NODE=byId(STORY.start);updateProgress();advance();};
+  $('#btn-restart').onclick=()=>{cancelTimer();localStorage.removeItem(SAVE_KEY);chat.innerHTML='';CHAPTER_SEEN.clear();HISTORY=[];NODE=byId(STORY.start);updateProgress();advance();};
   $('#btn-auto').onclick=toggleAuto;
   $('#btn-status').onclick=()=>{ $('#status-body').textContent=currentStatusText(); $('#status-panel').hidden=false; };
   $('#btn-close-status').onclick=()=>$('#status-panel').hidden=true;

@@ -33,12 +33,12 @@ function parseFile(file) {
     if (/^\[SYS\]/i.test(t)) {
       flush(); const buf = [];
       for (i++; i < lines.length && !/^\[\/SYS\]/i.test(lines[i].trim()); i++) buf.push(lines[i]);
-      i--; blocks.push({ kind: 'sys', text: buf.join('\n').trim() }); continue;
+      blocks.push({ kind: 'sys', text: buf.join('\n').trim() }); continue;
     }
     if (/^\[STATUS\]/i.test(t)) {
       flush(); const buf = [];
       for (i++; i < lines.length && !/^\[\/STATUS\]/i.test(lines[i].trim()); i++) buf.push(lines[i]);
-      i--; blocks.push({ kind: 'status', text: buf.join('\n').trim() }); continue;
+      blocks.push({ kind: 'status', text: buf.join('\n').trim() }); continue;
     }
     if (/^:::\s*choice/.test(t)) {
       flush();

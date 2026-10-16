@@ -28,7 +28,7 @@ console.log(`목차 장 수: ${toc.length}, 본문과 순서·제목 일치:`, t
 if(!tocOk){toc.forEach((t,i)=>{if(t!==bodyTitles[i])console.log(`  불일치 ${i+1}: 목차="${t}" 본문="${bodyTitles[i]}"`)});}
 
 // 금지 구문
-const banned=[/TODO/i,/TBD/i,/FIXME/i,/자리\s*표시/,/내용\s*추가\s*예정/,/나중에\s*채움/];
+const banned=[/TODO/i,/TBD/i,/FIXME/i,/자리\s*표시/,/내용\s*추가\s*예정/,/나중에\s*채움/,/\[\/(SYS|STATUS)\]/i];
 for(const re of banned){const f=re.test(src);console.log(`금지구 ${re}:`, f?'❌ 발견':'✅ 없음');}
 
 // 중복 문단 (빈 줄 구분, 정규화 후 40자 이상 동일 쌍)
