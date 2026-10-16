@@ -1060,13 +1060,13 @@
    "prompt": "밤은 길었고, 그 길이가 곧 지혁의 연습장이었다.",
    "options": [
     {
-     "label": "시간은 흘러, 어른이 된 지혁의 가장 긴 밤으로 — 그 밤, 창이 떴다",
+     "label": "같은 밤이 어른의 모습으로 다시 온다",
      "goto": "CH02",
      "main": true,
      "gotoNode": "ch02_b0"
     },
     {
-     "label": "유년의 어느 밤 한 조각을 더 본다",
+     "label": "어린 밤에 하나, 닫히지 않은 조각이 남아 있다",
      "goto": "BR_child01",
      "main": false,
      "gotoNode": "br_child01_b0"
@@ -2001,13 +2001,13 @@
    "prompt": "화면이 첫 기록을 펼치기 시작했다.",
    "options": [
     {
-     "label": "기록 속으로 들어간다 (5월 26일)",
+     "label": "기록의 첫 줄에 찍힌 날짜를 따라간다",
      "goto": "CH03",
      "main": true,
      "gotoNode": "ch03_b0"
     },
     {
-     "label": "아리아에게 정체부터 묻는다",
+     "label": "펼치기 전에, 창 너머의 목소리에 묻는다",
      "goto": "BR_aria01",
      "main": false,
      "gotoNode": "br_aria01_b0"
@@ -3296,13 +3296,13 @@
    "prompt": "첫 배포의 주소가 새벽을 비춘다.",
    "options": [
     {
-     "label": "벽 뒤에 기다리던 유월로 들어간다",
+     "label": "주소 다음에서 문을 여는 달이 있다",
      "goto": "CH04",
      "main": true,
      "gotoNode": "ch04_b0"
     },
     {
-     "label": "이 밤의 캡처를 한 번 더 본다",
+     "label": "그 새벽의 화면을 한 번 더 펼친다",
      "goto": "BR_first_night",
      "main": false,
      "gotoNode": "br_first_night_b0"
@@ -4565,13 +4565,13 @@
    "prompt": "완주한 유월의 밤이 끝나간다.",
    "options": [
     {
-     "label": "지친 손으로 백업 폴더를 연다",
+     "label": "책상 아래 검은 상자가 손을 기다린다",
      "goto": "CH05",
      "main": true,
      "gotoNode": "ch05_b0"
     },
     {
-     "label": "오늘만은 아무것도 열지 않는다",
+     "label": "아무것도 열지 않는 밤도 있다",
      "goto": "BR_rest04",
      "main": false,
      "gotoNode": "br_rest04_b0"
@@ -5830,13 +5830,13 @@
    "prompt": "새 런타임이 조용히 숨을 쉰다.",
    "options": [
     {
-     "label": "로그 너머의 프로토콜을 연다",
+     "label": "문서가 없는 세계의 문서를 찾는다",
      "goto": "CH06",
      "main": true,
      "gotoNode": "ch06_b0"
     },
     {
-     "label": "모니터를 끄고 잠든다",
+     "label": "숨 쉬는 로그를 둔 채 화면을 끈다",
      "goto": "BR_rest05",
      "main": false,
      "gotoNode": "br_rest05_b0"
@@ -6798,13 +6798,13 @@
    "prompt": "새벽 네 시, 로그의 마지막 줄에서 커서가 깜빡인다.",
    "options": [
     {
-     "label": "9월 11일의 아침으로 넘어간다",
+     "label": "커서가 멈춘 아침에서, 작은 것이 깨어난다",
      "goto": "CH07",
      "main": true,
      "gotoNode": "ch07_b0"
     },
     {
-     "label": "잠시 눈을 감는다",
+     "label": "깜빡이는 줄을 둔 채 눈을 감는다",
      "goto": "BR_dawn_rest",
      "main": false,
      "gotoNode": "br_dawn_rest_b0"
@@ -7956,13 +7956,13 @@
    "prompt": "알의 그림자가 화면 위에서 일렁인다.",
    "options": [
     {
-     "label": "16일 뒤의 새벽으로 간다",
+     "label": "그림자가 멈추는 새벽, 지켜야 할 것이 보인다",
      "goto": "CH08",
      "main": true,
      "gotoNode": "ch08_b0"
     },
     {
-     "label": "오늘 밤은 그냥 잔다",
+     "label": "일렁임을 켜 둔 채 그냥 잔다",
      "goto": "BR_sleep_well",
      "main": false,
      "gotoNode": "br_sleep_well_b0"
@@ -9090,13 +9090,13 @@
    "prompt": "새벽의 창틀이 하얗게 물들기 시작한다.",
    "options": [
     {
-     "label": "다음 밤의 로그로 넘어간다",
+     "label": "하얗게 물든 새벽 다음에, 방이 움직인다",
      "goto": "CH09",
      "main": true,
      "gotoNode": "ch09_b0"
     },
     {
-     "label": "오늘은 문을 걸고 잔다",
+     "label": "물드는 새벽에 문을 걸고 잔다",
      "goto": "BR_locked_sleep",
      "main": false,
      "gotoNode": "br_locked_sleep_b0"
@@ -10334,13 +10334,13 @@
    "prompt": "방의 심장이 문법으로 번역되기 시작했다.",
    "options": [
     {
-     "label": "이어서 공지와 일정의 모양도 뜯어 본다",
+     "label": "문법이 사람들 앞에 서는 밤으로 간다",
      "goto": "CH10",
      "main": true,
      "gotoNode": "ch10_b0"
     },
     {
-     "label": "오늘은 여기까지, 노트를 덮는다",
+     "label": "심장을 둔 채 노트를 덮는다",
      "goto": "BR_close_note",
      "main": false,
      "gotoNode": "br_close_note_b0"
@@ -11466,13 +11466,13 @@
    "prompt": "노트의 마지막 줄이 조용히 빛난다.",
    "options": [
     {
-     "label": "다음 페이지에 자기 이야기를 적기 시작한다",
+     "label": "다음 줄에 적혀야 하는 건, 남의 이야기가 아니었다",
      "goto": "CH11",
      "main": true,
      "gotoNode": "ch11_b0"
     },
     {
-     "label": "부장님의 말을 곱씹으며 잠을 청한다",
+     "label": "불을 끄기 전에, 오늘 들은 말을 한 번 더 씹는다",
      "goto": "BR_reflect_sleep",
      "main": false,
      "gotoNode": "br_reflect_sleep_b0"
