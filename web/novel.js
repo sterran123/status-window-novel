@@ -1,7 +1,7 @@
 // 채팅형 인터랙티브 소설 엔진 — story/story.json (tools/build.js 생성물)
 let STORY=null, NODE=null, CHAPTER_SEEN=new Set(), HISTORY=[];
 let AUTO=true, TIMER=null, CURRENT_ILLUS=null, RENDER_LOCK=false;
-let SETTINGS={auto:true,theme:'dark'};
+let SETTINGS={auto:true,theme:'dark',speed:1};
 let SAVE_REC={pos:null,endings:[]};
 const $=s=>document.querySelector(s);
 const chat=$('#chat'), choices=$('#choices'), nextBtn=$('#btn-next');
@@ -24,6 +24,9 @@ async function init(){
   $('#set-manual').onclick=()=>setAuto(false);
   $('#set-dark').onclick=()=>setTheme('dark');
   $('#set-light').onclick=()=>setTheme('light');
+  $('#set-speed-fast').onclick=()=>setSpeed(0.75);
+  $('#set-speed-normal').onclick=()=>setSpeed(1);
+  $('#set-speed-slow').onclick=()=>setSpeed(1.4);
   $('#btn-status').onclick=()=>{ $('#status-body').textContent=currentStatusText(); $('#status-panel').hidden=false; };
   $('#btn-close-status').onclick=()=>$('#status-panel').hidden=true;
   $('#status-panel').addEventListener('click',e=>{if(e.target.id==='status-panel')$('#status-panel').hidden=true;});
@@ -67,6 +70,8 @@ function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SET_KEY));if
 function saveSettings(){try{localStorage.setItem(SET_KEY,JSON.stringify(SETTINGS))}catch(e){}}
 function applyTheme(){document.documentElement.dataset.theme=SETTINGS.theme||'dark';}
 function setTheme(t){SETTINGS.theme=t;saveSettings();applyTheme();syncSettingsUI();}
+function setSpeed(v){SETTINGS.speed=v;saveSettings();syncSettingsUI();
+  cancelTimer();if(AUTO&&!modalOpen()&&nextBtn.style.display!=='none')scheduleNext(lastNode());}
 function setAuto(v){AUTO=!!v;SETTINGS.auto=AUTO;saveSettings();syncAutoUI();syncSettingsUI();cancelTimer();
   if(AUTO&&!modalOpen()&&nextBtn.style.display!=='none')scheduleNext(lastNode());}
 function syncAutoUI(){$('#btn-auto').textContent=AUTO?'⏸ 자동':'▶ 수동';$('#btn-auto').classList.toggle('off',!AUTO);
@@ -76,6 +81,9 @@ function syncSettingsUI(){
   $('#set-manual').classList.toggle('on',!AUTO);
   $('#set-dark').classList.toggle('on',SETTINGS.theme!=='light');
   $('#set-light').classList.toggle('on',SETTINGS.theme==='light');
+  $('#set-speed-fast').classList.toggle('on',SETTINGS.speed===0.75);
+  $('#set-speed-normal').classList.toggle('on',!SETTINGS.speed||SETTINGS.speed===1);
+  $('#set-speed-slow').classList.toggle('on',SETTINGS.speed===1.4);
   $('#set-note').textContent=(AUTO
     ?'자동: 글자 수에 맞춰 문장이 이어지고, 선택지·엔딩에서 멈춥니다. 탭하면 즉시 넘어갑니다.'
     :'수동: 클릭·탭·스페이스·→·↓ 키로 넘깁니다. 모바일은 볼륨 아래 키도 됩니다(기기에 따라 다름).')
@@ -169,14 +177,22 @@ function buildNameFields(){
   });
 }
 
-// 글자 수에 비례한 읽기 속도 — 짧은 줄은 빠르게, 긴 문단은 머무르게
+// 문장마다 다른 읽기 시간 — 길이·종류·문장부호를 반영, 설정의 읽기 속도로 조절
 function delayFor(n){
-  const len=((n.text||n.display||n.prompt||'')+'').length;
-  let d=420+len*26;
-  if(n.type==='sys'||n.type==='status')d+=700;      // 상태창·시스템은 읽을 시간 더
-  if(n.type==='scene')d=900;
-  if(n.type==='img')d=2600;                          // 삽화는 머무르게
-  return Math.min(2600,Math.max(480,d));
+  if(n.type==='scene')return 900;
+  if(n.type==='img')return 2600;
+  const t=(n.text||n.display||n.prompt||'')+'';
+  const rate=n.type==='msg'?(n.speaker==='나레이션'?28:22)
+    :n.type==='chatline'?20
+    :n.type==='aria'?30
+    :n.type==='choice'?30
+    :26;                                            // sys·status 포함
+  let d=420+t.length*rate;
+  const enders=(t.match(/[.!?…—]/g)||[]).length, mids=(t.match(/[,·]/g)||[]).length;
+  d+=Math.min(1400,enders*180+mids*70);             // 문장부호마다 숨 고르기
+  if(n.type==='sys'||n.type==='status')d+=600;
+  d/=(SETTINGS.speed||1);
+  return Math.min(9000,Math.max(480,d));
 }
 function scheduleNext(n){
   if(!AUTO||TIMER||!n)return;
