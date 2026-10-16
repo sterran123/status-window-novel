@@ -137,7 +137,8 @@ function delayFor(n){
   const len=((n.text||n.display||n.prompt||'')+'').length;
   let d=420+len*26;
   if(n.type==='sys'||n.type==='status')d+=700;      // 상태창·시스템은 읽을 시간 더
-  if(n.type==='scene'||n.type==='chapter')d=900;
+  if(n.type==='scene')d=900;
+  if(n.type==='img')d=2600;                          // 삽화는 머무르게
   return Math.min(2600,Math.max(480,d));
 }
 function scheduleNext(n){
@@ -202,6 +203,7 @@ function render(n){
     case 'sys':el('bubble sys',esc(disp(n.text)).replace(/\n/g,'<br>'));break;
     case 'status':el('bubble status',esc(disp(n.display)).replace(/\n/g,'<br>'));break;
     case 'scene':el('scene-divider','* * *');break;
+    case 'img':el('illus',`<img src="${esc(n.src)}" alt="${esc(disp(n.alt)||'삽화')}" loading="lazy">`+(n.alt?`<figcaption>${esc(disp(n.alt))}</figcaption>`:''));break;
     case 'choice':cancelTimer();nextBtn.style.display='none';renderChoice(n);return;
     case 'end':cancelTimer();nextBtn.style.display='none';renderEnd(n);return;
     case 'goto':advance();return;

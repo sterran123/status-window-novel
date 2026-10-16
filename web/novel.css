@@ -76,6 +76,12 @@ body{margin:0;background:
 .scene-divider{align-self:center;color:#5a6478;letter-spacing:.9em;margin:30px 0;font-size:13px;
   padding-left:.9em}
 
+/* 삽화 — 장면 일러스트 */
+.illus{align-self:stretch;margin:14px 0;animation:pop .4s ease}
+.illus img{display:block;width:100%;max-width:640px;margin:0 auto;border-radius:14px;
+  border:1px solid #2c3546;box-shadow:0 10px 36px rgba(0,0,0,.45)}
+.illus figcaption{text-align:center;font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.05em}
+
 /* ── 선택지 ─────────────────────── */
 .choices{display:flex;flex-direction:column;gap:11px;margin-top:26px}
 .choice-hint{align-self:center;font-size:12px;letter-spacing:.3em;color:var(--dim);
@@ -191,6 +197,7 @@ html[data-theme="light"] .bubble.aria{background:linear-gradient(135deg,#f2edfb,
 html[data-theme="light"] .bubble.chatline{background:#f6f8fc;border-color:#dde2ec;color:#455064}
 html[data-theme="light"] .chapter-banner{background:linear-gradient(135deg,#ffffff,#f4f1e8);border-color:#e2d3a8}
 html[data-theme="light"] .scene-divider{color:#98a1b4}
+html[data-theme="light"] .illus img{border-color:#dde1ec;box-shadow:0 10px 36px rgba(31,36,48,.14)}
 html[data-theme="light"] .choices button{background:linear-gradient(135deg,#ffffff,#f4f6fb);
   border-color:#d7dce8;color:var(--txt);box-shadow:0 2px 8px rgba(31,36,48,.08)}
 html[data-theme="light"] .choices button:hover{border-color:var(--accent);

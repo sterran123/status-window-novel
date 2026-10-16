@@ -40,6 +40,12 @@ function parseFile(file) {
       for (i++; i < lines.length && !/^\[\/STATUS\]/i.test(lines[i].trim()); i++) buf.push(lines[i]);
       blocks.push({ kind: 'status', text: buf.join('\n').trim() }); continue;
     }
+    if (/^\[IMG\]/i.test(t)) {
+      flush(); const buf = [];
+      for (i++; i < lines.length && !/^\[\/IMG\]/i.test(lines[i].trim()); i++) buf.push(lines[i]);
+      const seg = buf.join(' ').trim().split('|').map(s => s.trim());
+      blocks.push({ kind: 'img', src: seg[0], alt: seg[1] || '' }); continue;
+    }
     if (/^:::\s*choice/.test(t)) {
       flush();
       const cid = (/id="([^"]+)"/.exec(t) || [])[1] || ('c' + blocks.length);
@@ -106,6 +112,7 @@ for (const cid of order) {
       case 'sys': node = { ...base, type: 'sys', text: b.text }; break;
       case 'status': node = { ...base, type: 'status', display: b.text }; break;
       case 'chatline': node = { ...base, type: 'chatline', speaker: b.who, text: b.text }; break;
+      case 'img': node = { ...base, type: 'img', src: b.src, alt: b.alt }; break;
       case 'scene': node = { ...base, type: 'scene' }; break;
       case 'choice': node = {
         ...base, type: 'choice', prompt: b.prompt,
@@ -166,6 +173,7 @@ function blockText(b) {
     case 'sys': return b.text;
     case 'status': return b.text;
     case 'chatline': return `-${b.who}: ${b.text}`;
+    case 'img': return `[삽화] ${b.alt || b.src}`;
     case 'scene': return `* * *`;
     case 'choice': {
       const m = b.options.find(o => o.main) || b.options[0];
