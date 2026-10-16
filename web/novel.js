@@ -68,12 +68,13 @@ function syncSettingsUI(){
   $('#set-manual').classList.toggle('on',!AUTO);
   $('#set-dark').classList.toggle('on',SETTINGS.theme!=='light');
   $('#set-light').classList.toggle('on',SETTINGS.theme==='light');
-  $('#set-note').textContent=AUTO
+  $('#set-note').textContent=(AUTO
     ?'자동: 글자 수에 맞춰 문장이 이어지고, 선택지·엔딩에서 멈춥니다. 탭하면 즉시 넘어갑니다.'
-    :'수동: 클릭·탭·스페이스·→·↓ 키로 넘깁니다. 모바일은 볼륨 아래 키도 됩니다(기기에 따라 다름).';
+    :'수동: 클릭·탭·스페이스·→·↓ 키로 넘깁니다. 모바일은 볼륨 아래 키도 됩니다(기기에 따라 다름).')
+    +'\n\n바꾼 이름은 다음 문장부터 적용되고 이 브라우저에 저장됩니다.';
 }
 function modalOpen(){return !$('#settings-panel').hidden||!$('#resume-panel').hidden;}
-function openSettings(){syncSettingsUI();cancelTimer();$('#settings-panel').hidden=false;}
+function openSettings(){syncSettingsUI();buildNameFields();cancelTimer();$('#settings-panel').hidden=false;}
 function closeSettings(){$('#settings-panel').hidden=true;
   if(AUTO&&nextBtn.style.display!=='none')scheduleNext(lastNode());}
 function showResume(rec){
@@ -91,6 +92,45 @@ function showResume(rec){
 
 function cancelTimer(){if(TIMER){clearTimeout(TIMER);TIMER=null;}}
 function lastNode(){return HISTORY[HISTORY.length-1];}
+
+/* ── 인물 이름 바꾸기 (독자 지정 → 표시 시 치환, 저장됨) ── */
+const NAME_FIELDS=[
+  {key:'권지혁',label:'주인공',also:['지혁']},
+  {key:'친구',label:'어린 시절 친구',notAfter:'밥'},   // '밥친구'(앱 이름)는 제외
+  {key:'어머니',label:'어머니'},
+  {key:'아버지',label:'아버지'},
+  {key:'누나',label:'누나'},
+  {key:'태윤',label:'혼밥비서 팀원'},
+  {key:'태우',label:'혼밥비서 팀원'},
+  {key:'윤재목',label:'리추얼 부장님'},
+  {key:'눈꽃',label:'채팅방 유저'},
+  {key:'은우',label:'채팅방 유저'},
+  {key:'민재',label:'채팅방 유저'},
+];
+// 아리아는 'ARIA = A Reader, In the Archives' 약자가 CH12 반전 소재라 고정
+function applyNames(t){
+  const nm=SETTINGS.names;if(!nm||!t)return t;
+  for(const f of NAME_FIELDS){
+    const v=nm[f.key];if(!v)continue;
+    if(f.notAfter)t=t.replace(new RegExp(`(?<!${f.notAfter})${f.key}`,'g'),v);
+    else t=t.split(f.key).join(v);
+    for(const a of f.also||[])t=t.split(a).join(v);
+  }
+  return t;
+}
+function disp(t){return applyNames(t)}
+function buildNameFields(){
+  const g=$('#name-fields');g.innerHTML='';
+  NAME_FIELDS.forEach(f=>{
+    const d=document.createElement('div');d.className='name-field';
+    const l=document.createElement('label');l.textContent=`${f.label} (${f.key})`;
+    const i=document.createElement('input');i.placeholder=f.key;i.maxLength=12;
+    i.value=(SETTINGS.names||{})[f.key]||'';
+    i.oninput=()=>{SETTINGS.names=SETTINGS.names||{};const v=i.value.trim().slice(0,12);
+      if(v)SETTINGS.names[f.key]=v;else delete SETTINGS.names[f.key];saveSettings();};
+    d.append(l,i);g.appendChild(d);
+  });
+}
 
 // 글자 수에 비례한 읽기 속도 — 짧은 줄은 빠르게, 긴 문단은 머무르게
 function delayFor(n){
@@ -136,7 +176,7 @@ function currentStatusText(){
     const i=idx(NODE);
     for(let k=i;k>=0;k--){if(STORY.nodes[k].type==='status'){s=STORY.nodes[k];break}}
   }
-  if(s)return s.display;
+  if(s)return disp(s.display);
   return '[ 상태창 ]\n\n이름: 권지혁\n레벨: ?\n칭호: 없음\n\n[스탯]\n설명력: ??  관찰력: ??  버팀: ??\n\n※ 아직 상태창이 열리지 않았습니다.\n   기록이 동기화되면 이 창에 수치가 채워집니다.';
 }
 function scroll(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}))}
@@ -155,12 +195,12 @@ function render(n){
   switch(n.type){
     case 'msg':{
       const cls=n.speaker==='나레이션'?'narration':(n.speaker===STORY.protagonist?'me':'other');
-      const who=(n.speaker==='나레이션'||n.speaker===STORY.protagonist)?'':`<span class="who">${esc(n.speaker)}</span>`;
-      el('bubble '+cls,who+esc(n.text).replace(/\n/g,'<br>'));break}
-    case 'aria':el('bubble aria','<span class="who">아리아</span>《'+esc(n.text)+'》');break;
-    case 'chatline':el('bubble chatline',`<span class="who">${esc(n.speaker)}</span>`+esc(n.text));break;
-    case 'sys':el('bubble sys',esc(n.text).replace(/\n/g,'<br>'));break;
-    case 'status':el('bubble status',esc(n.display).replace(/\n/g,'<br>'));break;
+      const who=(n.speaker==='나레이션'||n.speaker===STORY.protagonist)?'':`<span class="who">${esc(disp(n.speaker))}</span>`;
+      el('bubble '+cls,who+esc(disp(n.text)).replace(/\n/g,'<br>'));break}
+    case 'aria':el('bubble aria','<span class="who">아리아</span>《'+esc(disp(n.text))+'》');break;
+    case 'chatline':el('bubble chatline',`<span class="who">${esc(disp(n.speaker))}</span>`+esc(disp(n.text)));break;
+    case 'sys':el('bubble sys',esc(disp(n.text)).replace(/\n/g,'<br>'));break;
+    case 'status':el('bubble status',esc(disp(n.display)).replace(/\n/g,'<br>'));break;
     case 'scene':el('scene-divider','* * *');break;
     case 'choice':cancelTimer();nextBtn.style.display='none';renderChoice(n);return;
     case 'end':cancelTimer();nextBtn.style.display='none';renderEnd(n);return;
@@ -172,15 +212,15 @@ function render(n){
 
 function renderChoice(n){
   nextBtn.style.display='none';choices.innerHTML='';
-  if(n.prompt)el('bubble narration',esc(n.prompt));
+  if(n.prompt)el('bubble narration',esc(disp(n.prompt)));
   const hint=document.createElement('div');hint.className='choice-hint';hint.textContent='선택의 순간';
   choices.appendChild(hint);
   n.options.forEach((o,i)=>{
     const b=document.createElement('button');
     b.style.animationDelay=(i*110)+'ms';
-    b.textContent=o.label;
+    b.textContent=disp(o.label);
     b.onclick=()=>{
-      choices.innerHTML='';el('bubble me',esc(o.label));
+      choices.innerHTML='';el('bubble me',esc(disp(o.label)));
       NODE = o.gotoNode? byId(o.gotoNode) : null;
       if(NODE){advance();}
       else{el('bubble narration','이 길은 아직 닿지 못한다. 다른 선택이 문이 된다.');nextBtn.style.display='none';}

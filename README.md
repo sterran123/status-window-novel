@@ -15,6 +15,8 @@
 - `story/outline.md` — 장별 인과표
 - `manuscript.md` — 제출용 정본 원고 (본문 + 부록: 분기 안내·대조표·수정기록·AI판단·확인방법)
 - `web/` — 채팅형 뷰어 (`node tools/serve.js` → http://localhost:8642/web/)
+  - 자동 재생(선택지·엔딩에서 정지)/수동 모드, 다크·라이트 테마, 인물 이름 바꾸기, 이어보기 팝업, 탭 전환 시 자동저장 — ⚙ 설정에서 변경
+  - 배포: https://sterran123.github.io/status-window-novel/web/
 
 ## 명령
 
