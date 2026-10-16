@@ -78,16 +78,18 @@ body{margin:0;background:
 
 /* ── 선택지 ─────────────────────── */
 .choices{display:flex;flex-direction:column;gap:11px;margin-top:26px}
+.choice-hint{align-self:center;font-size:12px;letter-spacing:.3em;color:var(--dim);
+  display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.choice-hint::before,.choice-hint::after{content:"";width:44px;height:1px;background:var(--dim);opacity:.5}
 .choices button{position:relative;padding:16px 18px 16px 52px;border-radius:14px;
   border:1px solid #31405c;background:linear-gradient(135deg,#1c2333,#171d29);
   color:var(--txt);font-size:15.5px;cursor:pointer;text-align:left;transition:.18s;
-  box-shadow:0 2px 8px rgba(0,0,0,.3)}
+  box-shadow:0 2px 8px rgba(0,0,0,.3);animation:choiceIn .4s cubic-bezier(.2,.8,.3,1) both}
+@keyframes choiceIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
 .choices button::before{content:"▸";position:absolute;left:18px;top:50%;transform:translateY(-50%);
   color:var(--accent);font-size:17px}
 .choices button:hover{border-color:var(--accent);transform:translateX(6px);
   background:linear-gradient(135deg,#232d44,#1c2333);box-shadow:0 4px 16px rgba(255,184,77,.12)}
-.choices button .tag{display:inline-block;margin-right:8px;font-size:11px;color:var(--accent);
-  border:1px solid var(--accent);border-radius:5px;padding:1px 6px;vertical-align:middle}
 
 /* ── 계속 버튼 ──────────────────── */
 .next-btn{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:14px 48px;
@@ -128,6 +130,79 @@ body{margin:0;background:
 .endcard p{color:var(--dim);line-height:1.8}
 .endcard .end-hint{font-size:12.5px;color:#6b7486;margin-top:14px}
 .end-restart{display:block;margin:22px auto 0;position:static;transform:none;padding:13px 34px}
+
+/* ── 설정/이어보기 모달 ─────────── */
+.modal[hidden]{display:none}
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+  background:rgba(4,6,10,.62);backdrop-filter:blur(5px);animation:fadein .2s ease}
+.modal-card{width:min(380px,90vw);background:linear-gradient(180deg,var(--panel),var(--bg2));
+  border:1px solid #3a4456;border-radius:18px;padding:28px 24px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);animation:slideup .25s ease}
+.modal-card h3{margin:0 0 18px;font-size:17px;color:var(--txt);text-align:center}
+.set-row{margin-bottom:16px}
+.set-label{display:block;font-size:12px;color:var(--dim);margin-bottom:7px;letter-spacing:.08em}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:11px 0;border-radius:10px;border:1px solid #31405c;
+  background:var(--bg2);color:var(--dim);cursor:pointer;font-size:14px;transition:.15s}
+.seg button.on{border-color:var(--accent);color:var(--accent);font-weight:700;
+  background:rgba(255,184,77,.08)}
+.set-note{font-size:12px;color:var(--dim);line-height:1.7;background:rgba(255,255,255,.03);
+  border-radius:8px;padding:10px 12px;margin:4px 0 18px}
+.modal-card>button{width:100%;padding:13px;border-radius:10px;border:1px solid #31405c;
+  background:var(--bg2);color:var(--txt);cursor:pointer;font-size:14px;font-weight:700}
+.modal-card>button:hover{border-color:var(--accent);color:var(--accent)}
+.modal-card>button.primary{background:linear-gradient(135deg,#3a6cf0,#2b55d4);border:none;color:#fff;margin-bottom:9px}
+.modal-card>button.primary:hover{filter:brightness(1.12);color:#fff}
+.modal-card>button.ghost{background:transparent}
+.resume-info{font-size:14.5px;color:var(--dim);line-height:1.8;text-align:center;margin:0 0 20px;
+  white-space:pre-line}
+.resume-info b{color:var(--accent)}
+
+/* ── 라이트 테마 ────────────────── */
+html[data-theme="light"]{
+  --bg:#eef0f6;--bg2:#ffffff;--panel:#ffffff;--bubble:#e6eaf3;
+  --txt:#1f2430;--dim:#5d6678;--accent:#b57d14;--aria:#6a4fc0;
+  --sys:#eef7f1;--sys-border:#1f9d55;--status-border:#c98a1e;
+}
+html[data-theme="light"] body{background:
+  radial-gradient(1200px 600px at 80% -10%,#dde4f2 0%,transparent 60%),
+  radial-gradient(900px 500px at 10% 110%,#e2e8f4 0%,transparent 55%),
+  var(--bg)}
+html[data-theme="light"] .topbar{background:rgba(255,255,255,.92);border-bottom-color:#dde1ec}
+html[data-theme="light"] .topnav button,html[data-theme="light"] .topnav a{background:#fff;border-color:#d7dce8;color:var(--txt)}
+html[data-theme="light"] .topnav button:hover,html[data-theme="light"] .topnav a:hover{color:var(--accent);border-color:var(--accent)}
+html[data-theme="light"] .progress{background:#dde2ec}
+html[data-theme="light"] .bubble{box-shadow:0 2px 8px rgba(31,36,48,.08)}
+html[data-theme="light"] .bubble.narration{color:#3c4354}
+html[data-theme="light"] .bubble.other{background:var(--bubble)}
+html[data-theme="light"] .bubble.me{background:linear-gradient(135deg,#3a6cf0,#2b55d4);color:#fff}
+html[data-theme="light"] .bubble.sys{background:linear-gradient(180deg,#f0faf3,#e9f6ee);color:#1d6b3f;
+  box-shadow:0 0 24px rgba(31,157,85,.10),0 2px 8px rgba(31,36,48,.06)}
+html[data-theme="light"] .bubble.status{background:linear-gradient(180deg,#fdf7e9,#fbf0d8);color:#7a5200;
+  box-shadow:0 0 24px rgba(201,138,30,.10),0 2px 8px rgba(31,36,48,.06)}
+html[data-theme="light"] .bubble.aria{background:linear-gradient(135deg,#f2edfb,#ece5f8);color:#443280;border-color:#b8a6e6}
+html[data-theme="light"] .bubble.chatline{background:#f6f8fc;border-color:#dde2ec;color:#455064}
+html[data-theme="light"] .chapter-banner{background:linear-gradient(135deg,#ffffff,#f4f1e8);border-color:#e2d3a8}
+html[data-theme="light"] .scene-divider{color:#98a1b4}
+html[data-theme="light"] .choices button{background:linear-gradient(135deg,#ffffff,#f4f6fb);
+  border-color:#d7dce8;color:var(--txt);box-shadow:0 2px 8px rgba(31,36,48,.08)}
+html[data-theme="light"] .choices button:hover{border-color:var(--accent);
+  background:linear-gradient(135deg,#fffdf5,#fdf6e6);box-shadow:0 4px 16px rgba(201,138,30,.15)}
+html[data-theme="light"] .endcard{background:linear-gradient(180deg,#ffffff,#f2f4f9);border-color:#dde1ec;
+  box-shadow:0 12px 40px rgba(31,36,48,.10)}
+html[data-theme="light"] .endcard p{color:var(--dim)}
+html[data-theme="light"] .status-card{background:linear-gradient(180deg,#fdf8ec,#faf0d9);border-left-color:var(--status-border)}
+html[data-theme="light"] .status-card h3{color:#8a5f08}
+html[data-theme="light"] .status-card pre{color:#7a5200;background:rgba(201,138,30,.06);border-color:rgba(201,138,30,.3)}
+html[data-theme="light"] .status-card button{color:#8a5f08;border-color:#c98a1e}
+html[data-theme="light"] .modal-card{background:linear-gradient(180deg,#ffffff,#f4f6fa);border-color:#dde1ec;
+  box-shadow:0 20px 60px rgba(31,36,48,.18)}
+html[data-theme="light"] .seg button{background:#fff;border-color:#d7dce8}
+html[data-theme="light"] .seg button.on{background:rgba(201,138,30,.08)}
+html[data-theme="light"] .set-note{background:rgba(31,36,48,.04)}
+html[data-theme="light"] .modal-card>button{background:#fff;border-color:#d7dce8}
+html[data-theme="light"] .modal-card>button.primary{background:linear-gradient(135deg,#3a6cf0,#2b55d4);border:none}
+html[data-theme="light"] .modal-card>button.ghost{background:transparent}
 
 /* ── 모바일 ─────────────────────── */
 @media (max-width:600px){
