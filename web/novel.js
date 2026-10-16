@@ -218,7 +218,10 @@ function currentStatusText(){
   return '[ 상태창 ]\n\n이름: 권지혁\n레벨: ?\n칭호: 없음\n\n[스탯]\n설명력: ??  관찰력: ??  버팀: ??\n\n※ 아직 상태창이 열리지 않았습니다.\n   기록이 동기화되면 이 창에 수치가 채워집니다.';
 }
 function scroll(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}))}
-function el(cls,html){const d=document.createElement('div');d.className=cls;d.innerHTML=html;chat.appendChild(d);scroll();return d}
+function el(cls,html,view){const d=document.createElement('div');d.className=cls;d.innerHTML=html;chat.appendChild(d);
+  if(view==='center')requestAnimationFrame(()=>d.scrollIntoView({block:'center',behavior:'smooth'}));
+  else scroll();
+  return d}
 function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
 
 function showChapter(ch){
@@ -272,7 +275,13 @@ function renderNode(n){
     case 'sys':el('bubble sys',esc(disp(n.text)).replace(/\n/g,'<br>'));break;
     case 'status':el('bubble status',statusCompactHTML(n.display,prevStatusText(n)));break;
     case 'scene':el('scene-divider','* * *');break;
-    case 'img':CURRENT_ILLUS=el('illus'+(n.variant?' '+esc(n.variant):''),`<img src="${esc(n.src)}" alt="${esc(disp(n.alt)||'삽화')}" loading="lazy">`+(n.alt?`<figcaption>${esc(disp(n.alt))}</figcaption>`:''));break;
+    case 'img':{
+      const f=el('illus'+(n.variant?' '+esc(n.variant):''),`<img src="${esc(n.src)}" alt="${esc(disp(n.alt)||'삽화')}" loading="lazy">`+(n.alt?`<figcaption>${esc(disp(n.alt))}</figcaption>`:''),'center');
+      const im=f.querySelector('img');
+      // 로드 후 실제 높이로 한 번 더 중앙 정렬 — 삽화가 통째로 보이게
+      if(im){const rc=()=>f.scrollIntoView({block:'center',behavior:'smooth'});
+        im.addEventListener('load',rc,{once:true});setTimeout(rc,120);}
+      CURRENT_ILLUS=f;break}
     case 'choice':cancelTimer();nextBtn.style.display='none';renderChoice(n);return;
     case 'end':cancelTimer();nextBtn.style.display='none';renderEnd(n);return;
     case 'goto':advance();return;

@@ -83,8 +83,9 @@ body{margin:0;background:
   padding-left:.9em}
 
 /* 삽화 — 장면 일러스트 (떴다가 서서히 사라지는 순간 장면) */
-.illus{align-self:stretch;margin:14px 0;animation:illusIn .7s ease}
-.illus img{display:block;width:100%;max-width:640px;margin:0 auto;border-radius:14px;
+.illus{align-self:stretch;margin:14px 0 42vh;animation:illusIn .7s ease}
+.illus img{display:block;width:auto;height:auto;max-width:min(640px,100%);max-height:62vh;
+  margin:0 auto;border-radius:14px;object-fit:contain;
   border:1px solid #2c3546;box-shadow:0 10px 36px rgba(0,0,0,.45);
   animation:illusZoom 5s ease-out .1s both}
 .illus figcaption{text-align:center;font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.05em}
