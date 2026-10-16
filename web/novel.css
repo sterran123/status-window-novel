@@ -95,6 +95,23 @@ body{margin:0;background:
 @keyframes illusZoom{from{transform:scale(1)}to{transform:scale(1.045)}}
 @keyframes illusOut{to{opacity:0;transform:scale(.965);filter:blur(6px)}}
 
+/* 삽화가 지나간 자리의 미니 이정표 — 누르면 다시 크게 */
+.illus.mini{margin:8px 0;animation:illusIn .35s ease;display:flex;align-items:center;
+  justify-content:center;gap:10px;cursor:pointer}
+.illus.mini img{max-width:96px;width:auto;height:64px;max-height:64px;animation:none;
+  border-radius:9px;opacity:.85;transition:.15s}
+.illus.mini figcaption{margin:0;font-size:11px;opacity:.75;text-align:left}
+.illus.mini figcaption::before{content:"🖼 삽화 · "}
+.illus.mini:hover img{opacity:1;transform:scale(1.04)}
+.illus.mini:hover figcaption{color:var(--accent);opacity:1}
+
+/* 삽화 라이트박스 */
+.illus-light{z-index:70}
+.illus-light figure{margin:0;max-width:min(880px,94vw);text-align:center}
+.illus-light img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:14px;
+  border:1px solid #2c3546;box-shadow:0 20px 70px rgba(0,0,0,.6)}
+.illus-light figcaption{color:var(--dim);font-size:13px;margin-top:12px}
+
 /* ── 선택지 ─────────────────────── */
 .choices{display:flex;flex-direction:column;gap:11px;margin-top:26px}
 .choice-hint{align-self:center;font-size:12px;letter-spacing:.3em;color:var(--dim);

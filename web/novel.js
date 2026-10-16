@@ -41,14 +41,15 @@ async function init(){
   $('#btn-open-cast').onclick=()=>openCast();
   $('#btn-close-cast').onclick=()=>$('#cast-panel').hidden=true;
   $('#cast-panel').addEventListener('click',e=>{if(e.target.id==='cast-panel')$('#cast-panel').hidden=true;});
+  $('#illus-light').addEventListener('click',e=>{if(e.target.id==='illus-light'||e.target.id==='illus-light-img'||e.target.tagName==='FIGURE')$('#illus-light').hidden=true;});
   // 본문을 누르면 기다림을 건너뛰고 바로 다음 문장 (일시정지 중에도 탭하면 넘어감)
   $('.chat-wrap').addEventListener('click',e=>{
-    if(modalOpen()||e.target.closest('button,a'))return;
+    if(modalOpen()||e.target.closest('button,a,.illus'))return;
     if(TIMER){cancelTimer();advance();}
     else if(!AUTO&&nextBtn.style.display!=='none'){advance();}
   });
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(!$('#settings-panel').hidden)closeSettings();$('#status-panel').hidden=true;$('#cast-panel').hidden=true;return;}
+    if(e.key==='Escape'){if(!$('#settings-panel').hidden)closeSettings();$('#status-panel').hidden=true;$('#cast-panel').hidden=true;$('#illus-light').hidden=true;return;}
     if(modalOpen())return;
     // 스페이스·엔터·→·↓·볼륨아래(모바일)로 다음 문장
     if([' ','Enter','ArrowRight','ArrowDown','AudioVolumeDown','VolumeDown'].includes(e.key)||e.keyCode===25){
@@ -89,7 +90,7 @@ function syncSettingsUI(){
     :'수동: 클릭·탭·스페이스·→·↓ 키로 넘깁니다. 모바일은 볼륨 아래 키도 됩니다(기기에 따라 다름).')
     +'\n\n바꾼 이름은 다음 문장부터 적용되고 이 브라우저에 저장됩니다.';
 }
-function modalOpen(){return !$('#settings-panel').hidden||!$('#cover').hidden||!$('#cast-panel').hidden;}
+function modalOpen(){return !$('#settings-panel').hidden||!$('#cover').hidden||!$('#cast-panel').hidden||!$('#illus-light').hidden;}
 function openSettings(){syncSettingsUI();buildNameFields();cancelTimer();$('#settings-panel').hidden=false;}
 function closeSettings(){$('#settings-panel').hidden=true;
   if(AUTO&&nextBtn.style.display!=='none')scheduleNext(lastNode());}
@@ -270,14 +271,27 @@ function statusCompactHTML(cur,prev){
 function render(n){
   HISTORY.push(n);writeSave();
   if(n.chapter)showChapter(n.chapter);
-  // 떠 있는 삽화는 서서히 지우고, 사라진 뒤에 다음 문장을 연다
+  // 떠 있는 삽화는 서서히 지우고, 자리에는 작은 썸네일 이정표를 남긴다
   if(CURRENT_ILLUS){
     const f=CURRENT_ILLUS;CURRENT_ILLUS=null;RENDER_LOCK=true;
     f.classList.add('out');
-    setTimeout(()=>{f.remove();RENDER_LOCK=false;renderNode(n);},1150);
+    setTimeout(()=>{
+      f.classList.remove('out');f.classList.add('mini');
+      f.onclick=()=>openIllus(f);
+      RENDER_LOCK=false;renderNode(n);
+    },1150);
     return;
   }
   renderNode(n);
+}
+
+// 미니 썸네일을 누르면 삽화를 크게 다시 보여 준다
+function openIllus(f){
+  const img=f.querySelector('img'),cap=f.querySelector('figcaption');
+  $('#illus-light-img').src=img.src;
+  $('#illus-light-img').alt=img.alt;
+  $('#illus-light-cap').textContent=cap?cap.textContent:'';
+  cancelTimer();$('#illus-light').hidden=false;
 }
 
 function renderNode(n){
