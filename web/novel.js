@@ -1,5 +1,6 @@
 // 채팅형 인터랙티브 소설 엔진 — story/story.json (tools/build.js 생성물)
 let STORY=null, NODE=null, CHAPTER_SEEN=new Set(), HISTORY=[];
+let AUTO=true, TIMER=null;
 const $=s=>document.querySelector(s);
 const chat=$('#chat'), choices=$('#choices'), nextBtn=$('#btn-next');
 const SAVE_KEY='novel-save-v1';
@@ -8,20 +9,50 @@ init();
 async function init(){
   STORY=await (await fetch('../story/story.json')).json();
   document.title=`${STORY.title} — 채팅형 소설`;
-  $('.brand').textContent=STORY.title;
+  $('.brand').firstChild.textContent=STORY.title;
   const saved=loadSave();
   NODE = saved ? byId(saved) : byId(STORY.start);
-  nextBtn.onclick=advance;
+  nextBtn.onclick=()=>{cancelTimer();advance();};
   $('#btn-restart').onclick=()=>{localStorage.removeItem(SAVE_KEY);chat.innerHTML='';CHAPTER_SEEN.clear();HISTORY=[];NODE=byId(STORY.start);updateProgress();advance();};
+  $('#btn-auto').onclick=toggleAuto;
   $('#btn-status').onclick=()=>{ $('#status-body').textContent=currentStatusText(); $('#status-panel').hidden=false; };
   $('#btn-close-status').onclick=()=>$('#status-panel').hidden=true;
   $('#status-panel').addEventListener('click',e=>{if(e.target.id==='status-panel')$('#status-panel').hidden=true;});
+  // 본문을 누르면 기다림을 건너뛰고 바로 다음 문장 (일시정지 중에도 탭하면 넘어감)
+  $('.chat-wrap').addEventListener('click',e=>{
+    if(e.target.closest('button,a'))return;
+    if(TIMER){cancelTimer();advance();}
+    else if(!AUTO&&nextBtn.style.display!=='none'){advance();}
+  });
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){$('#status-panel').hidden=true;return;}
-    if(e.key===' '||e.key==='Enter'){e.preventDefault();if(nextBtn.style.display!=='none')advance();}
+    if(e.key===' '||e.key==='Enter'){e.preventDefault();cancelTimer();if(nextBtn.style.display!=='none')advance();}
   });
   updateProgress();
   advance();
+}
+
+function toggleAuto(){
+  AUTO=!AUTO;
+  $('#btn-auto').textContent=AUTO?'⏸ 자동':'▶ 재생';
+  $('#btn-auto').classList.toggle('off',!AUTO);
+  cancelTimer();
+  if(AUTO && nextBtn.style.display!=='none') scheduleNext(lastNode());
+}
+function cancelTimer(){if(TIMER){clearTimeout(TIMER);TIMER=null;}}
+function lastNode(){return HISTORY[HISTORY.length-1];}
+
+// 글자 수에 비례한 읽기 속도 — 짧은 줄은 빠르게, 긴 문단은 머무르게
+function delayFor(n){
+  const len=((n.text||n.display||n.prompt||'')+'').length;
+  let d=420+len*26;
+  if(n.type==='sys'||n.type==='status')d+=700;      // 상태창·시스템은 읽을 시간 더
+  if(n.type==='scene'||n.type==='chapter')d=900;
+  return Math.min(2600,Math.max(480,d));
+}
+function scheduleNext(n){
+  if(!AUTO||TIMER)return;
+  TIMER=setTimeout(()=>{TIMER=null;advance();},delayFor(n));
 }
 function updateProgress(){
   if(!STORY||!NODE)return;
@@ -64,11 +95,12 @@ function render(n){
     case 'sys':el('bubble sys',esc(n.text).replace(/\n/g,'<br>'));break;
     case 'status':el('bubble status',esc(n.display).replace(/\n/g,'<br>'));break;
     case 'scene':el('scene-divider','* * *');break;
-    case 'choice':renderChoice(n);return;
-    case 'end':renderEnd(n);return;
+    case 'choice':cancelTimer();nextBtn.style.display='none';renderChoice(n);return;
+    case 'end':cancelTimer();nextBtn.style.display='none';renderEnd(n);return;
     case 'goto':advance();return;
   }
   nextBtn.style.display='block';
+  scheduleNext(n);
 }
 
 function renderChoice(n){
@@ -92,7 +124,9 @@ function renderEnd(n){
   nextBtn.style.display='none';
   const e=(STORY.endings||[]).find(x=>x.id===n.ending)||{label:'엔딩',desc:''};
   const d=document.createElement('div');d.className='endcard';
-  d.innerHTML=`<div class="end-badge">ENDING</div><h2>${esc(e.label)}</h2><p>${esc(e.desc)}</p>`;
+  const rest=(STORY.endings||[]).filter(x=>x.id!==n.ending).map(x=>esc(x.label)).join(' · ');
+  d.innerHTML=`<div class="end-badge">ENDING</div><h2>${esc(e.label)}</h2><p>${esc(e.desc)}</p>`+
+    `<div class="end-hint">이 이야기에는 다른 결말이 있습니다 — ${rest}</div>`;
   chat.appendChild(d);
   const r=document.createElement('button');r.className='next-btn end-restart';
   r.textContent='↺ 다른 길로 (처음부터)';

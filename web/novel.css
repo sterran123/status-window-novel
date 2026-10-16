@@ -96,6 +96,9 @@ body{margin:0;background:
   box-shadow:0 8px 28px rgba(58,108,240,.45);transition:.15s;z-index:25}
 .next-btn:hover{filter:brightness(1.15);transform:translateX(-50%) translateY(-2px)}
 
+/* 자동재생 꺼짐 상태의 버튼 */
+.topnav button.off{opacity:.55;border-style:dashed}
+
 /* ── 상태창 패널 (우측 서랍 / 모바일 하단 시트) ── */
 .status-panel[hidden]{display:none}
 .status-panel{position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end;
