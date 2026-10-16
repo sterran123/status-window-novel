@@ -236,7 +236,7 @@ function renderNode(n){
     case 'sys':el('bubble sys',esc(disp(n.text)).replace(/\n/g,'<br>'));break;
     case 'status':el('bubble status',statusCompactHTML(n.display,prevStatusText(n)));break;
     case 'scene':el('scene-divider','* * *');break;
-    case 'img':CURRENT_ILLUS=el('illus',`<img src="${esc(n.src)}" alt="${esc(disp(n.alt)||'삽화')}" loading="lazy">`+(n.alt?`<figcaption>${esc(disp(n.alt))}</figcaption>`:''));break;
+    case 'img':CURRENT_ILLUS=el('illus'+(n.variant?' '+esc(n.variant):''),`<img src="${esc(n.src)}" alt="${esc(disp(n.alt)||'삽화')}" loading="lazy">`+(n.alt?`<figcaption>${esc(disp(n.alt))}</figcaption>`:''));break;
     case 'choice':cancelTimer();nextBtn.style.display='none';renderChoice(n);return;
     case 'end':cancelTimer();nextBtn.style.display='none';renderEnd(n);return;
     case 'goto':advance();return;

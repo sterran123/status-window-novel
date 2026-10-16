@@ -11,8 +11,10 @@ const STYLE = 'Korean web novel illustration, soft painterly digital art, muted 
 
 // file: web/img/<file>, size: ima2 size preset, prompt: 장면 설명
 const ART = [
-  { file: 'jihyeok.png', size: '1024x1536', prompt:
-    `Half-body character portrait of a Korean male university student in his early twenties, short slightly messy black hair, calm observant dark eyes, wearing a plain dark hoodie, gentle but quietly determined expression, seated at a desk turned toward the viewer, soft blue monitor glow lighting one side of his face, plain deep indigo background. ${STYLE}` },
+  { file: 'jihyeok.png', size: '1024x1536',
+    refs: ['주인공얼굴사진/KakaoTalk_20261017_040912541_03.jpg', '주인공얼굴사진/KakaoTalk_20261017_040912541_01.jpg'],
+    prompt:
+    `Half-body illustrated character portrait inspired by the young Korean man in the reference photos — keep his recognizable features: wavy dark hair falling over the forehead, gentle deep monolid eyes, soft face shape, pale skin — but drawn as a handsome Korean webnovel protagonist: slightly sharper jawline, clean skin, subtle quiet charisma. Early twenties university student, plain dark hoodie, seated at a desk turned toward the viewer, soft blue monitor glow lighting one side of his face, calm observant expression, plain deep indigo background. ${STYLE}` },
   { file: 'ch01_laptop.png', size: '1536x1024', prompt:
     `Night bedroom desk: a middle-school boy's hand gently resting on the lid of an old thick scuffed silver laptop that his father just handed down, warm desk lamp glow, stacked textbooks, cozy dim room, seen slightly from above, nostalgic mood. ${STYLE}` },
   { file: 'ch02_window.png', size: '1536x1024', prompt:
@@ -58,6 +60,7 @@ async function gen(spec) {
     body: JSON.stringify({
       prompt: spec.prompt, provider: 'oauth', model: MODEL,
       size: spec.size, quality: 'high', reasoningEffort: 'high',
+      ...(spec.refs ? { references: spec.refs.map(f => fs.readFileSync(path.join(ROOT, f)).toString('base64')) } : {}),
       async: true, requestId,
     }),
   });

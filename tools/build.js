@@ -44,7 +44,7 @@ function parseFile(file) {
       flush(); const buf = [];
       for (i++; i < lines.length && !/^\[\/IMG\]/i.test(lines[i].trim()); i++) buf.push(lines[i]);
       const seg = buf.join(' ').trim().split('|').map(s => s.trim());
-      blocks.push({ kind: 'img', src: seg[0], alt: seg[1] || '' }); continue;
+      blocks.push({ kind: 'img', src: seg[0], alt: seg[1] || '', variant: seg[2] || '' }); continue;
     }
     if (/^:::\s*choice/.test(t)) {
       flush();
@@ -112,7 +112,7 @@ for (const cid of order) {
       case 'sys': node = { ...base, type: 'sys', text: b.text }; break;
       case 'status': node = { ...base, type: 'status', display: b.text }; break;
       case 'chatline': node = { ...base, type: 'chatline', speaker: b.who, text: b.text }; break;
-      case 'img': node = { ...base, type: 'img', src: b.src, alt: b.alt }; break;
+      case 'img': node = { ...base, type: 'img', src: b.src, alt: b.alt, variant: b.variant || undefined }; break;
       case 'scene': node = { ...base, type: 'scene' }; break;
       case 'choice': node = {
         ...base, type: 'choice', prompt: b.prompt,
