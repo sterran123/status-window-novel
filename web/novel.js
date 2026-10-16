@@ -12,19 +12,34 @@ async function init(){
   const saved=loadSave();
   NODE = saved ? byId(saved) : byId(STORY.start);
   nextBtn.onclick=advance;
-  $('#btn-restart').onclick=()=>{localStorage.removeItem(SAVE_KEY);chat.innerHTML='';CHAPTER_SEEN.clear();HISTORY=[];NODE=byId(STORY.start);advance();};
+  $('#btn-restart').onclick=()=>{localStorage.removeItem(SAVE_KEY);chat.innerHTML='';CHAPTER_SEEN.clear();HISTORY=[];NODE=byId(STORY.start);updateProgress();advance();};
   $('#btn-status').onclick=()=>{ $('#status-body').textContent=currentStatusText(); $('#status-panel').hidden=false; };
   $('#btn-close-status').onclick=()=>$('#status-panel').hidden=true;
-  document.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(nextBtn.style.display!=='none')advance();}});
+  $('#status-panel').addEventListener('click',e=>{if(e.target.id==='status-panel')$('#status-panel').hidden=true;});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){$('#status-panel').hidden=true;return;}
+    if(e.key===' '||e.key==='Enter'){e.preventDefault();if(nextBtn.style.display!=='none')advance();}
+  });
+  updateProgress();
   advance();
+}
+function updateProgress(){
+  if(!STORY||!NODE)return;
+  const pct=Math.max(0,Math.min(100,(idx(NODE)/STORY.nodes.length)*100));
+  $('#progress-bar').style.width=pct+'%';
 }
 function loadSave(){try{return localStorage.getItem(SAVE_KEY)}catch(e){return null}}
 function save(id){try{localStorage.setItem(SAVE_KEY,id)}catch(e){}}
 function byId(id){return STORY.nodes.find(n=>n.id===id)}
 function idx(n){return STORY.nodes.indexOf(n)}
 function currentStatusText(){
-  const s=[...HISTORY].reverse().find(n=>n.type==='status');
-  return s? s.display : '아직 상태창이 열리지 않았다.';
+  let s=[...HISTORY].reverse().find(n=>n.type==='status');
+  if(!s&&NODE){ // 새로고침 후에는 현재 위치 이전의 가장 최근 상태창을 찾는다
+    const i=idx(NODE);
+    for(let k=i;k>=0;k--){if(STORY.nodes[k].type==='status'){s=STORY.nodes[k];break}}
+  }
+  if(s)return s.display;
+  return '[ 상태창 ]\n\n이름: 권지혁\n레벨: ?\n칭호: 없음\n\n[스탯]\n설명력: ??  관찰력: ??  버팀: ??\n\n※ 아직 상태창이 열리지 않았습니다.\n   기록이 동기화되면 이 창에 수치가 채워집니다.';
 }
 function scroll(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}))}
 function el(cls,html){const d=document.createElement('div');d.className=cls;d.innerHTML=html;chat.appendChild(d);scroll();return d}
@@ -89,5 +104,6 @@ function advance(){
   if(!NODE)return;
   const n=NODE;
   NODE = n.next? byId(n.next) : (STORY.nodes[idx(n)+1]||null);
+  updateProgress();
   render(n);
 }
