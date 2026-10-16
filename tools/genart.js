@@ -11,6 +11,10 @@ const STYLE = 'Korean web novel illustration, soft painterly digital art, muted 
 
 // file: web/img/<file>, size: ima2 size preset, prompt: 장면 설명
 const ART = [
+  { file: 'cover.png', size: '1024x1536',
+    refs: ['web/img/jihyeok.jpg'],
+    prompt:
+    `Korean webnovel book cover art, NO TEXT anywhere: the same young man from the reference — wavy dark hair, gentle monolid eyes, dark hoodie — seen from behind at three-quarter angle, sitting at a desk in a dark room at dawn, a large glowing translucent blue holographic status window floating in the air between him and the monitor, faint data glyphs, cat sleeping on the desk edge, coffee can, window curtain with thin dawn light, dramatic upward composition leaving the top third darker for title space. ${STYLE}` },
   { file: 'jihyeok.png', size: '1024x1536',
     refs: ['주인공얼굴사진/KakaoTalk_20261017_040912541_03.jpg', '주인공얼굴사진/KakaoTalk_20261017_040912541_01.jpg'],
     prompt:

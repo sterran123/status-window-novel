@@ -4,10 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>상태창이 뜬 날 — 권지혁 이야기</title>
+<meta property="og:title" content="상태창이 뜬 날 — 권지혁 이야기">
+<meta property="og:description" content="선택지마다 결말이 갈리는 채팅형 장편소설">
+<meta property="og:image" content="img/cover.jpg">
 <link rel="icon" type="image/jpeg" href="img/jihyeok.jpg">
 <link rel="stylesheet" href="novel.css">
 </head>
 <body>
+
+<aside id="cover" class="cover" hidden>
+  <img class="cover-img" src="img/cover.jpg" alt="표지 — 상태창이 뜬 날">
+  <div class="cover-shade"></div>
+  <div class="cover-inner">
+    <div class="cover-badge">선택형 채팅 소설</div>
+    <h1 class="cover-title">상태창이 뜬 날</h1>
+    <div class="cover-sub">권지혁 이야기 · 12장 · 4개의 결말</div>
+    <div class="cover-btns">
+      <button id="btn-cover-main" class="cover-btn primary">이야기 시작</button>
+      <button id="btn-cover-fresh" class="cover-btn ghost" hidden>처음부터</button>
+      <button id="btn-cover-cast" class="cover-btn ghost">등장인물</button>
+    </div>
+    <div class="cover-foot">선택지마다 결말이 갈립니다 · 읽던 자리와 설정은 자동 저장됩니다</div>
+  </div>
+</aside>
 <header class="topbar">
   <div class="brand">상태창이 뜬 날<em>권지혁 이야기</em></div>
   <nav class="topnav">
@@ -57,16 +76,16 @@
       <div id="name-fields" class="name-grid"></div>
     </div>
     <div class="set-note" id="set-note"></div>
+    <button id="btn-open-cast" style="margin-bottom:9px">등장인물 보기</button>
     <button id="btn-close-settings">닫기</button>
   </div>
 </aside>
 
-<aside id="resume-panel" class="modal" hidden>
-  <div class="modal-card">
-    <h3>📖 읽던 자리가 있습니다</h3>
-    <p id="resume-info" class="resume-info"></p>
-    <button id="btn-resume" class="primary">이어보기</button>
-    <button id="btn-fresh" class="ghost">처음부터</button>
+<aside id="cast-panel" class="modal" hidden>
+  <div class="modal-card cast-card">
+    <h3>등장인물</h3>
+    <div id="cast-list"></div>
+    <button id="btn-close-cast">닫기</button>
   </div>
 </aside>
 

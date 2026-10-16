@@ -27,9 +27,17 @@ async function init(){
   $('#btn-status').onclick=()=>{ $('#status-body').textContent=currentStatusText(); $('#status-panel').hidden=false; };
   $('#btn-close-status').onclick=()=>$('#status-panel').hidden=true;
   $('#status-panel').addEventListener('click',e=>{if(e.target.id==='status-panel')$('#status-panel').hidden=true;});
-  // 이어보기 팝업
-  $('#btn-resume').onclick=()=>{ $('#resume-panel').hidden=true; NODE=(SAVE_REC.pos&&byId(SAVE_REC.pos))||byId(STORY.start); updateProgress(); advance(); };
-  $('#btn-fresh').onclick=()=>{ $('#resume-panel').hidden=true; $('#btn-restart').click(); };
+  // 표지 → 이어보기/시작/처음부터 + 등장인물 패널
+  $('#btn-cover-main').onclick=()=>{
+    $('#cover').hidden=true;
+    if(SAVE_REC.pos&&byId(SAVE_REC.pos)){NODE=byId(SAVE_REC.pos);updateProgress();advance();}
+    else{resetProgress();NODE=byId(STORY.start);advance();}
+  };
+  $('#btn-cover-fresh').onclick=()=>{ $('#cover').hidden=true; $('#btn-restart').click(); };
+  $('#btn-cover-cast').onclick=()=>openCast();
+  $('#btn-open-cast').onclick=()=>openCast();
+  $('#btn-close-cast').onclick=()=>$('#cast-panel').hidden=true;
+  $('#cast-panel').addEventListener('click',e=>{if(e.target.id==='cast-panel')$('#cast-panel').hidden=true;});
   // 본문을 누르면 기다림을 건너뛰고 바로 다음 문장 (일시정지 중에도 탭하면 넘어감)
   $('.chat-wrap').addEventListener('click',e=>{
     if(modalOpen()||e.target.closest('button,a'))return;
@@ -37,7 +45,7 @@ async function init(){
     else if(!AUTO&&nextBtn.style.display!=='none'){advance();}
   });
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(!$('#settings-panel').hidden)closeSettings();$('#status-panel').hidden=true;return;}
+    if(e.key==='Escape'){if(!$('#settings-panel').hidden)closeSettings();$('#status-panel').hidden=true;$('#cast-panel').hidden=true;return;}
     if(modalOpen())return;
     // 스페이스·엔터·→·↓·볼륨아래(모바일)로 다음 문장
     if([' ','Enter','ArrowRight','ArrowDown','AudioVolumeDown','VolumeDown'].includes(e.key)||e.keyCode===25){
@@ -51,8 +59,7 @@ async function init(){
   window.addEventListener('pagehide',writeSave);
   window.addEventListener('beforeunload',writeSave);
   updateProgress();
-  if(rec&&rec.pos&&byId(rec.pos))showResume(rec);
-  else{NODE=byId(STORY.start);advance();}
+  showCover(rec);
 }
 
 /* ── 설정 (로컬스토리지 저장) ── */
@@ -74,21 +81,50 @@ function syncSettingsUI(){
     :'수동: 클릭·탭·스페이스·→·↓ 키로 넘깁니다. 모바일은 볼륨 아래 키도 됩니다(기기에 따라 다름).')
     +'\n\n바꾼 이름은 다음 문장부터 적용되고 이 브라우저에 저장됩니다.';
 }
-function modalOpen(){return !$('#settings-panel').hidden||!$('#resume-panel').hidden;}
+function modalOpen(){return !$('#settings-panel').hidden||!$('#cover').hidden||!$('#cast-panel').hidden;}
 function openSettings(){syncSettingsUI();buildNameFields();cancelTimer();$('#settings-panel').hidden=false;}
 function closeSettings(){$('#settings-panel').hidden=true;
   if(AUTO&&nextBtn.style.display!=='none')scheduleNext(lastNode());}
-function showResume(rec){
-  const n=byId(rec.pos);
-  const cm=n&&n.chapter?/^CH(\d+)$/.exec(n.chapter):null;
-  const ch=cm?`제 ${+cm[1]}장`:(/^BR_/.test(n&&n.chapter||'')?'사이드 씬':(/^END_/.test(n&&n.chapter||'')?'엔딩':''));
-  const chTitle=n&&n.chapter?(STORY.chapters.find(c=>c.id===n.chapter)||{}).title:null;
-  const pct=n?Math.round(idx(n)/STORY.nodes.length*100):0;
-  const ends=(SAVE_REC.endings||[]).map(e=>(STORY.endings.find(x=>x.id===e)||{}).label).filter(Boolean).join(' · ');
-  $('#resume-info').innerHTML=
-    `<b>${esc(ch)}${chTitle?' — '+esc(chTitle):''}</b>\n진행률 ${pct}% 지점까지 읽었습니다`+
-    (ends?`\n\n읽은 엔딩: ${esc(ends)}`:'');
-  $('#resume-panel').hidden=false;
+// 표지 — 이어보기 지점·읽은 엔딩을 버튼에 반영
+function showCover(rec){
+  const n=rec&&rec.pos?byId(rec.pos):null;
+  const main=$('#btn-cover-main'), fresh=$('#btn-cover-fresh');
+  if(n){
+    const cm=/^CH(\d+)$/.exec(n.chapter||'');
+    const ch=cm?`제 ${+cm[1]}장`:(/^BR_/.test(n.chapter||'')?'사이드 씬':(/^END_/.test(n.chapter||'')?'엔딩':''));
+    const pct=Math.round(idx(n)/STORY.nodes.length*100);
+    main.textContent=`이어보기 — ${ch} · ${pct}%`;
+    fresh.hidden=false;
+  }else{main.textContent='이야기 시작';fresh.hidden=true;}
+  const ends=(SAVE_REC.endings||[]).map(e=>(STORY.endings.find(x=>x.id===e)||{}).label).filter(Boolean);
+  $('.cover-foot').textContent=ends.length
+    ?`읽은 엔딩: ${ends.join(' · ')} — 다른 길도 남아 있습니다`
+    :'선택지마다 결말이 갈립니다 · 읽던 자리와 설정은 자동 저장됩니다';
+  $('#cover').hidden=false;
+}
+
+// 등장인물 — 지정한 이름(disp)을 반영해 보여 준다
+const CAST=[
+  {key:'권지혁',img:'img/jihyeok.jpg',desc:'이 이야기의 주인공. 말보다 눈이 먼저인 사람 — 어느 새벽, 상태창이 떴다.'},
+  {key:'아리아',desc:'《 》로 말하는 안내자. 시스템 너머의 존재.'},
+  {key:'아버지',desc:'말없이 낡은 노트북을 건넨 사람.'},
+  {key:'어머니',desc:'잔소리로 걱정을 표현하는 사람.'},
+  {key:'누나',desc:'건강검진 링크를 보내는 사람.'},
+  {key:'친구',desc:'"이거 반복해야 하는데 좀 도와줘" — 첫 부탁을 가져온 어린 시절 친구.'},
+  {key:'태윤',desc:'혼밥비서 팀 — 요리·식비 담당.'},
+  {key:'태우',desc:'혼밥비서 팀 — 냉장고·수다방 담당.'},
+  {key:'윤재목',desc:'리추얼 과정 부장님. "자기 이야기를 각색해 봐요."'},
+  {key:'눈꽃',desc:'지혁의 채팅방 사람들 — 눈꽃·은우·민재. 첫 사용자이자 증인.'},
+];
+function openCast(){
+  const g=$('#cast-list');g.innerHTML='';
+  CAST.forEach(c=>{
+    const d=document.createElement('div');d.className='cast-item';
+    d.innerHTML=(c.img?`<img src="${esc(c.img)}" alt="">`:'<span class="cast-dot"></span>')
+      +`<div><div class="nm">${esc(disp(c.key))}</div><div class="ds">${esc(disp(c.desc))}</div></div>`;
+    g.appendChild(d);
+  });
+  cancelTimer();$('#cast-panel').hidden=false;
 }
 
 function cancelTimer(){if(TIMER){clearTimeout(TIMER);TIMER=null;}}
