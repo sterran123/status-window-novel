@@ -180,7 +180,7 @@ function delayFor(n){
   const enders=(t.match(/[.!?…—]/g)||[]).length, mids=(t.match(/[,·]/g)||[]).length;
   d+=Math.min(1400,enders*180+mids*70);             // 문장부호마다 숨 고르기
   if(n.type==='sys'||n.type==='status')d+=600;
-  d/=(SETTINGS.speed||1);
+  d*=(SETTINGS.speed||1);                          // speed = 머무름 배율(1.4 천천히·0.75 빠르게)
   return Math.min(9000,Math.max(480,d));
 }
 function scheduleNext(n){
