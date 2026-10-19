@@ -1234,7 +1234,7 @@
    "id": "ch01_b140",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "야, 이거 반복해야 하는데 좀 도와줘. 네가 뭐 만들 수 있지 않아?",
    "next": "ch01_b141"
   },
@@ -1258,7 +1258,7 @@
    "id": "ch01_b143",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "일주일만 빠져도 순위가 날아가. 근데 학원 때문에 매일은 못 들어가.",
    "next": "ch01_b144"
   },
@@ -1274,7 +1274,7 @@
    "id": "ch01_b145",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "그러게. 근데 안 하면 안 되잖아.",
    "next": "ch01_b146"
   },
@@ -1354,7 +1354,7 @@
    "id": "ch01_b155",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "지금 저게 누르는 거야?",
    "next": "ch01_b156"
   },
@@ -1370,7 +1370,7 @@
    "id": "ch01_b157",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "손 안 대고?",
    "next": "ch01_b158"
   },
@@ -1402,7 +1402,7 @@
    "id": "ch01_b161",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "야, 진짜 되네. 어떻게 한 거야?",
    "next": "ch01_b162"
   },
@@ -1418,7 +1418,7 @@
    "id": "ch01_b163",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "그 '그냥'이 어디서 나오는데.",
    "next": "ch01_b164"
   },
@@ -1426,7 +1426,7 @@
    "id": "ch01_b164",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "아니 진짜로, 이거 내 컴퓨터에서도 돼?",
    "next": "ch01_b165"
   },
@@ -1442,7 +1442,7 @@
    "id": "ch01_b166",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "뭐야. 그럼 나 이제 매일 학원 다녀도 되는 거야? 누가 대신 눌러 주는 거잖아.",
    "next": "ch01_b167"
   },
@@ -1616,15 +1616,15 @@
    "id": "ch01_b188",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
-   "text": "야, 오늘도 봇이 인사하네 ㅋㅋ",
+   "speaker": "친구 · 준호",
+   "text": "야, 오늘도 봇이 인사하네! ㅋㅋ",
    "next": "ch01_b189"
   },
   {
    "id": "ch01_b189",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "이거 사람 아니지? 방금 대답한 거?",
    "next": "ch01_b190"
   },
@@ -1640,8 +1640,8 @@
    "id": "ch01_b191",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
-   "text": "얘가 방에 뭘 만들어 뒀어 ㅋㅋㅋ",
+   "speaker": "친구 · 준호",
+   "text": "얘가 방에 뭘 만들어 뒀어? ㅋㅋㅋ",
    "next": "ch01_b192"
   },
   {
@@ -1656,7 +1656,7 @@
    "id": "ch01_b193",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "넌 왜 그런 걸 만들어?",
    "next": "ch01_b194"
   },
@@ -1672,7 +1672,7 @@
    "id": "ch01_b195",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "매번 하면 되는 거 아냐?",
    "next": "ch01_b196"
   },
@@ -1696,7 +1696,7 @@
    "id": "ch01_b198",
    "chapter": "CH01",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "넌 진짜 이상해. ...그러니까 고마워.",
    "next": "ch01_b199"
   },
@@ -6504,7 +6504,7 @@
    "chapter": "CH04",
    "type": "chatline",
    "speaker": "태우",
-   "text": "그건 그냥 악순환이잖아요 ㅋㅋㅋ",
+   "text": "그건 그냥 악순환이잖아요! ㅋㅋㅋ",
    "next": "ch04_b50"
   },
   {
@@ -7233,7 +7233,7 @@
    "chapter": "CH04",
    "type": "chatline",
    "speaker": "태우",
-   "text": "수다방은 제가 다 눌러볼게요 ㅋㅋ",
+   "text": "수다방은 제가 다 눌러 볼게요! ㅋㅋ",
    "next": "ch04_b142"
   },
   {
@@ -7265,7 +7265,7 @@
    "chapter": "CH04",
    "type": "chatline",
    "speaker": "태우",
-   "text": "우리 버그 농장이에요? 자꾸 자라나요 ㅋㅋ",
+   "text": "우리 버그 농장이에요? 자꾸 자라나요! ㅋㅋ",
    "next": "ch04_b146"
   },
   {
@@ -7329,7 +7329,7 @@
    "chapter": "CH04",
    "type": "chatline",
    "speaker": "태우",
-   "text": "야식 드셨어요? 전 떡볶이 시켰어요 ㅋㅋ",
+   "text": "야식 드셨어요? 전 떡볶이 시켰어요! ㅋㅋ",
    "next": "ch04_b154"
   },
   {
@@ -7582,7 +7582,7 @@
    "chapter": "CH04",
    "type": "chatline",
    "speaker": "태우",
-   "text": "괴물 도감이 되어가는데요 ㅋㅋ",
+   "text": "괴물 도감이 되어 가는데요? ㅋㅋ",
    "next": "ch04_b186"
   },
   {
@@ -8367,7 +8367,7 @@
    "chapter": "CH04",
    "type": "chatline",
    "speaker": "태우",
-   "text": "수고했어요 진짜ㅋㅋ 우리 잘했다!",
+   "text": "수고했어요, 진짜! ㅋㅋ 우리 잘했다!",
    "next": "ch04_b285"
   },
   {
@@ -9736,7 +9736,7 @@
    "chapter": "CH05",
    "type": "chatline",
    "speaker": "봇",
-   "text": "퐁",
+   "text": "퐁.",
    "next": "ch05_b156"
   },
   {
@@ -9832,7 +9832,7 @@
    "chapter": "CH05",
    "type": "chatline",
    "speaker": "봇",
-   "text": "서울 맑음 28도",
+   "text": "서울, 맑음, 28도.",
    "next": "ch05_b168"
   },
   {
@@ -10324,7 +10324,7 @@
    "chapter": "CH05",
    "type": "chatline",
    "speaker": "사용자3",
-   "text": "살면 꼭 데려와요",
+   "text": "살면 꼭 데려와요.",
    "next": "ch05_b230"
   },
   {
@@ -10688,7 +10688,7 @@
    "chapter": "CH05",
    "type": "chatline",
    "speaker": "사용자1",
-   "text": "어? 봇이 빨라졌어요",
+   "text": "어? 봇이 빨라졌어요!",
    "next": "ch05_b276"
   },
   {
@@ -10696,7 +10696,7 @@
    "chapter": "CH05",
    "type": "chatline",
    "speaker": "사용자2",
-   "text": "오늘 명령어 안 씹히는데요",
+   "text": "오늘 명령어 안 씹히는데요?",
    "next": "ch05_b277"
   },
   {
@@ -11975,7 +11975,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "아 안녕하세요 이 방 뭐예요?",
+   "text": "아, 안녕하세요! 이 방 뭐예요?",
    "next": "ch06_b142"
   },
   {
@@ -11991,7 +11991,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "이름 귀엽네요 ㅋㅋ 너만오면됑",
+   "text": "이름 귀엽네요! ㅋㅋ 너만오면됑이라니.",
    "next": "ch06_b144"
   },
   {
@@ -12015,7 +12015,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "그럼 저 가끔 들를게요 방장님",
+   "text": "그럼 저 가끔 들를게요, 방장님.",
    "next": "ch06_b147"
   },
   {
@@ -12047,7 +12047,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "은우",
-   "text": "ㅋㅋㅋ 로그로 사람을 본다고요",
+   "text": "ㅋㅋㅋ 로그로 사람을 본다고요?",
    "next": "ch06_b151"
   },
   {
@@ -12055,7 +12055,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "은우",
-   "text": "그건 좀 무섭네요",
+   "text": "그건 좀 무섭네요.",
    "next": "ch06_b152"
   },
   {
@@ -12071,7 +12071,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "은우",
-   "text": "그럼 잘 살펴주세요 방장님",
+   "text": "그럼 잘 살펴 주세요, 방장님.",
    "next": "ch06_b154"
   },
   {
@@ -12103,7 +12103,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "민재",
-   "text": "와 대박 그럼 여기 완전 사유지네",
+   "text": "와, 대박. 그럼 여기 완전 사유지네.",
    "next": "ch06_b158"
   },
   {
@@ -12127,7 +12127,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "여기 조용해서 좋다",
+   "text": "여기 조용해서 좋다.",
    "next": "ch06_b161"
   },
   {
@@ -12135,7 +12135,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "은우",
-   "text": "야간반 같아요 야간반",
+   "text": "야간반 같아요, 야간반.",
    "next": "ch06_b162"
   },
   {
@@ -12301,7 +12301,7 @@
    "chapter": "CH06",
    "type": "chatline",
    "speaker": "민재",
-   "text": "이상한 사람이네 ㅋㅋ 근데 고마움",
+   "text": "이상한 사람이네! ㅋㅋ 근데 고마움.",
    "next": "ch06_b183"
   },
   {
@@ -12834,7 +12834,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "은우",
-   "text": "맞아요 방이 너무 조용해 죽겠음",
+   "text": "맞아요, 방이 너무 조용해 죽겠음.",
    "next": "ch07_b7"
   },
   {
@@ -12858,7 +12858,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "은우",
-   "text": "ㅋㅋㅋ 그거 방장이 만들어 주면 되잖아요 방장",
+   "text": "ㅋㅋㅋ 그거 방장이 만들어 주면 되잖아요, 방장.",
    "next": "ch07_b10"
   },
   {
@@ -12874,7 +12874,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "은우",
-   "text": "이름 짓는 것도! 나 이름 지을래요",
+   "text": "이름 짓는 것도! 나 이름 지을래요!",
    "next": "ch07_b12"
   },
   {
@@ -12882,7 +12882,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "뭐 나오는지는 비밀로 해요 상상이 재밌으니까",
+   "text": "뭐 나오는지는 비밀로 해요. 상상이 재밌으니까.",
    "next": "ch07_b13"
   },
   {
@@ -14620,7 +14620,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "이거 뭐예요 ㅋㅋ 복숭아?",
+   "text": "이거 뭐예요? ㅋㅋ 복숭아?",
    "next": "ch07_b231"
   },
   {
@@ -14700,7 +14700,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "은우",
-   "text": "어디요 어디!",
+   "text": "어디요, 어디!",
    "next": "ch07_b241"
   },
   {
@@ -14716,7 +14716,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "민재",
-   "text": "어 있다 ㅋㅋ 이거 나한테만 보여요?",
+   "text": "어, 있다! ㅋㅋ 이거 나한테만 보여요?",
    "next": "ch07_b243"
   },
   {
@@ -14732,7 +14732,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "아 미쳤다 진짜 귀여워요",
+   "text": "아, 미쳤다. 진짜 귀여워요!",
    "next": "ch07_b245"
   },
   {
@@ -14740,7 +14740,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "뭐야 내 알 방금 깜빡였어요!!",
+   "text": "뭐야, 내 알 방금 깜빡였어요!!",
    "next": "ch07_b246"
   },
   {
@@ -14748,7 +14748,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "은우",
-   "text": "말 걸었더니 진짜 반응함 ㅋㅋㅋㅋ",
+   "text": "말 걸었더니 진짜 반응함! ㅋㅋㅋㅋ",
    "next": "ch07_b247"
   },
   {
@@ -14788,7 +14788,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "민재",
-   "text": "뭐야 그게 더 양심에 찔리는데 ㅋㅋ",
+   "text": "뭐야, 그게 더 양심에 찔리는데? ㅋㅋ",
    "next": "ch07_b252"
   },
   {
@@ -14812,7 +14812,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "민재",
-   "text": "어제 떠든 걸 하루 만에… 무섭다 ㅋㅋ",
+   "text": "어제 떠든 걸 하루 만에… 무섭다! ㅋㅋ",
    "next": "ch07_b255"
   },
   {
@@ -14820,7 +14820,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "은우",
-   "text": "감동이야 나 이 알 평생 키울 거야",
+   "text": "감동이야. 나 이 알 평생 키울 거야!",
    "next": "ch07_b256"
   },
   {
@@ -14876,7 +14876,7 @@
    "chapter": "CH07",
    "type": "chatline",
    "speaker": "민재",
-   "text": "그건 그냥 과일이잖아요 ㅋㅋ",
+   "text": "그건 그냥 과일이잖아요! ㅋㅋ",
    "next": "ch07_b263"
   },
   {
@@ -15800,7 +15800,7 @@
    "chapter": "CH08",
    "type": "chatline",
    "speaker": "민재",
-   "text": "방장님 덕분에 밥 챙겨 먹어요 ㅋㅋ",
+   "text": "방장님 덕분에 밥 챙겨 먹어요! ㅋㅋ",
    "next": "ch08_b101"
   },
   {
@@ -17008,7 +17008,7 @@
    "chapter": "CH08",
    "type": "chatline",
    "speaker": "민재",
-   "text": "무슨 문 ㅋㅋ",
+   "text": "무슨 문? ㅋㅋ",
    "next": "ch08_b254"
   },
   {
@@ -17024,7 +17024,7 @@
    "chapter": "CH08",
    "type": "chatline",
    "speaker": "민재",
-   "text": "방장님은 진짜 매일 뭘 고치시네요 ㅋㅋ",
+   "text": "방장님은 진짜 매일 뭘 고치시네요! ㅋㅋ",
    "next": "ch08_b256"
   },
   {
@@ -18569,7 +18569,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "방장님 조용한 날이 제일 무서운데요 ㅋㅋ 뭔가 생겨나는 전조라서요",
+   "text": "방장님 조용한 날이 제일 무서운데요? ㅋㅋ 뭔가 생겨나는 전조라서요.",
    "next": "ch09_b132"
   },
   {
@@ -18577,7 +18577,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "은우",
-   "text": "맞아요 지난번에도 조용하시더니 알림이 고쳐져 있었잖아요",
+   "text": "맞아요. 지난번에도 조용하시더니 알림이 고쳐져 있었잖아요.",
    "next": "ch09_b133"
   },
   {
@@ -18585,7 +18585,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "민재",
-   "text": "이 방은 알아서 굴러감 ㅋㅋ 방장 도구가 밤마다 청소하잖아",
+   "text": "이 방은 알아서 굴러감! ㅋㅋ 방장 도구가 밤마다 청소하잖아.",
    "next": "ch09_b134"
   },
   {
@@ -18609,7 +18609,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "민재",
-   "text": "보고 있으면서 읽는 것밖에 못 한다는 게 무슨 말임",
+   "text": "보고 있으면서 읽는 것밖에 못 한다는 게 무슨 말임?",
    "next": "ch09_b137"
   },
   {
@@ -19299,7 +19299,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "방장님 드디어 투표 쓰셨네요 ㅋㅋ 이 방 첫 투표다",
+   "text": "방장님 드디어 투표 쓰셨네요! ㅋㅋ 이 방 첫 투표다!",
    "next": "ch09_b224"
   },
   {
@@ -19307,7 +19307,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "은우",
-   "text": "저 금요일 눌렀어요. 이거 되게 편하네요",
+   "text": "저 금요일 눌렀어요. 이거 되게 편하네요.",
    "next": "ch09_b225"
   },
   {
@@ -19331,7 +19331,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "민재",
-   "text": "시험? 투표가 무슨 시험이야",
+   "text": "시험? 투표가 무슨 시험이야?",
    "next": "ch09_b228"
   },
   {
@@ -19347,7 +19347,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "은우",
-   "text": "투표를요? 글씨도 아닌 걸 어떻게 읽어요",
+   "text": "투표를요? 글씨도 아닌 걸 어떻게 읽어요?",
    "next": "ch09_b230"
   },
   {
@@ -19363,7 +19363,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "민재",
-   "text": "무서운 사람이네 진짜 ㅋㅋ 그러니까 투표를 벗겨 봤다는 거잖아",
+   "text": "무서운 사람이네, 진짜! ㅋㅋ 그러니까 투표를 벗겨 봤다는 거잖아.",
    "next": "ch09_b232"
   },
   {
@@ -19411,7 +19411,7 @@
    "chapter": "CH09",
    "type": "chatline",
    "speaker": "은우",
-   "text": "방장님의 '읽는다'는 늘 그 뜻이죠 ㅋㅋ",
+   "text": "방장님의 '읽는다'는 늘 그 뜻이죠! ㅋㅋ",
    "next": "ch09_b238"
   },
   {
@@ -20804,7 +20804,7 @@
    "chapter": "CH10",
    "type": "chatline",
    "speaker": "민재",
-   "text": "예전엔 사진 맨날 날아갔는데 이젠 신세계예요 ㅋㅋ",
+   "text": "예전엔 사진 맨날 날아갔는데 이젠 신세계예요! ㅋㅋ",
    "next": "ch10_b138"
   },
   {
@@ -20852,7 +20852,7 @@
    "chapter": "CH10",
    "type": "chatline",
    "speaker": "은우",
-   "text": "그나저나 방장님은 대체 언제 주무세요? 새벽에도 답장 오던데 ㅋㅋ",
+   "text": "그나저나 방장님은 대체 언제 주무세요? 새벽에도 답장 오던데요? ㅋㅋ",
    "next": "ch10_b144"
   },
   {
@@ -20892,7 +20892,7 @@
    "chapter": "CH10",
    "type": "chatline",
    "speaker": "은우",
-   "text": "어서오세요! 여긴 눈팅도 환영입니다 ㅋㅋ",
+   "text": "어서 오세요! 여긴 눈팅도 환영입니다! ㅋㅋ",
    "next": "ch10_b149"
   },
   {
@@ -23805,7 +23805,7 @@
    "chapter": "CH12",
    "type": "chatline",
    "speaker": "눈꽃",
-   "text": "방장 또 새벽까지 살아있네 ㄷㄷ",
+   "text": "방장 또 새벽까지 살아 있네? ㄷㄷ",
    "next": "ch12_b77"
   },
   {
@@ -23813,7 +23813,7 @@
    "chapter": "CH12",
    "type": "chatline",
    "speaker": "은우",
-   "text": "그분한테 자는 시간이란 있는 건가",
+   "text": "그분한테 자는 시간이란 게 있긴 한 건가?",
    "next": "ch12_b78"
   },
   {
@@ -23821,7 +23821,7 @@
    "chapter": "CH12",
    "type": "chatline",
    "speaker": "민재",
-   "text": "근데 방장 따라 하다 보니까 나도 하나씩 되더라ㅋㅋ",
+   "text": "근데 방장 따라 하다 보니까 나도 하나씩 되더라! ㅋㅋ",
    "next": "ch12_b79"
   },
   {
@@ -23908,7 +23908,7 @@
    "id": "ch12_b89",
    "chapter": "CH12",
    "type": "msg",
-   "speaker": "친구",
+   "speaker": "친구 · 준호",
    "text": "야, 이거 반복해야 하는데 좀 도와줘.",
    "next": "ch12_b90"
   },
@@ -26575,7 +26575,7 @@
    "chapter": "END_NORMAL",
    "type": "msg",
    "speaker": "태우",
-   "text": "와 진짜요? 전 빨간 글씨만 떠도 손부터 떨려요.",
+   "text": "와, 진짜요? 전 빨간 글씨만 떠도 손부터 떨려요.",
    "next": "end_normal_b89"
   },
   {
@@ -27130,7 +27130,7 @@
    "chapter": "END_SAD",
    "type": "chatline",
    "speaker": "은우",
-   "text": "맞아요 요즘 왜케 딱딱해요",
+   "text": "맞아요. 요즘 왜케 딱딱해요?",
    "next": "end_sad_b45"
   },
   {
@@ -27138,7 +27138,7 @@
    "chapter": "END_SAD",
    "type": "chatline",
    "speaker": "민재",
-   "text": "예전엔 에러 나면 같이 욕해줬잖아요ㅋㅋ",
+   "text": "예전엔 에러 나면 같이 욕해 줬잖아요! ㅋㅋ",
    "next": "end_sad_b46"
   },
   {
@@ -27162,7 +27162,7 @@
    "chapter": "END_SAD",
    "type": "chatline",
    "speaker": "은우",
-   "text": "...진짜 봇 같애ㅋㅋㅋ",
+   "text": "...진짜 봇 같애! ㅋㅋㅋ",
    "next": "end_sad_b49"
   },
   {
@@ -27489,7 +27489,7 @@
    "chapter": "END_SAD",
    "type": "chatline",
    "speaker": "태우",
-   "text": "...그 '없음'이 뭔데요ㅋㅋ",
+   "text": "...그 '없음'이 뭔데요? ㅋㅋ",
    "next": "end_sad_b91"
   },
   {
@@ -29063,7 +29063,7 @@
    "chapter": "BR_first_night",
    "type": "chatline",
    "speaker": "태우",
-   "text": "저 지금 이불 속에서 폰으로 들어왔는데 열려요 ㅋㅋㅋ",
+   "text": "저 지금 이불 속에서 폰으로 들어왔는데 열려요! ㅋㅋㅋ",
    "next": "br_first_night_b10"
   },
   {

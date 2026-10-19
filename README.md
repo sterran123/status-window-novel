@@ -29,6 +29,7 @@
 - `node tools/anchors.js` — 대조표 앵커(CHxx-Pnnn) 재계산
 - `node tools/serve.js` — 로컬 미리보기 서버
 - `python tools/tts/pick_ref.py 아버지 --n 4` — 기준 음성 후보 여러 개 중 받아쓰기가 정확하고 음높이가 맞는 것을 골라 씀 (후보는 ref/candidates/)
+- 대사별 감정·말투 지시는 `tools/tts/tones.json` (장 → 대사 첫머리 → 인물 기본값 순으로 찾음). 시스템 메시지는 Praat으로 억양을 눌러 평평한 기계음으로 만듦
 - `python tools/tts/voice.py` — 대사 음성 생성 ([VoxCPM2](https://github.com/OpenBMB/VoxCPM), GPU 8GB+). 인물별 목소리 묘사는 `tools/tts/voices.json`, 기준 음성은 `tools/tts/ref/`. 이미 만든 대사는 건너뛰므로 원고를 고친 뒤 다시 돌리면 바뀐 줄만 생성됨. `--only 태우`, `--redo-ref 태우`로 한 인물만 다시 만들 수 있음
 
 참고소설(문체 분석용)·참고자료(실제 프로젝트 로그)는 비공개 재료라 커밋하지 않는다 (.gitignore).

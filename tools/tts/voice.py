@@ -96,11 +96,53 @@ class Checker:
         return cer(said, hyp), hyp
 
 
-def encode_mp3(wav, sr, dst):
+TONES = json.loads((TTS / 'tones.json').read_text('utf-8')) if (TTS / 'tones.json').exists() else {}
+
+
+def tone_for(node):
+    """감정·말투 지시 — tones.json: 장 안에서 대사 첫머리 일치 → 장의 인물 기본값 → 전체 기본값"""
+    if node['type'] == 'sys':
+        return None  # 시스템은 평평한 기계음(flatten)으로 따로 처리
+    sp = '아리아' if node['type'] == 'aria' else node['speaker']
+    ch = TONES.get(node.get('chapter', ''), {})
+    for key, tone in sorted(ch.items(), key=lambda kv: -len(kv[0])):
+        if not key.startswith('_') and node['text'].startswith(key):
+            return tone
+    return ch.get('_', {}).get(sp) or TONES.get('_', {}).get(sp)
+
+
+def flatten_pitch(wav, sr, keep=0.15):
+    """억양을 거의 없앤다 — 음높이 곡선을 평균 쪽으로 (1-keep)만큼 눌러 기계음처럼 (Praat PSOLA)"""
+    import numpy as np
+    import parselmouth
+    from parselmouth.praat import call
+    snd = parselmouth.Sound(wav.astype('float64'), sampling_frequency=sr)
+    man = call(snd, 'To Manipulation', 0.01, 75, 600)
+    tier = call(man, 'Extract pitch tier')
+    mean = call(tier, 'Get mean (curve)', 0, 0)
+    call(tier, 'Formula', f'{mean} + (self - {mean}) * {keep}')
+    call([tier, man], 'Replace pitch tier')
+    out = call(man, 'Get resynthesis (overlap-add)')
+    return np.asarray(out.values[0], dtype='float32')
+
+
+def loudness_for(tone):
+    """감정에 맞는 음량 목표(LUFS) — 속삭임은 작게, 외침은 크게 남긴다"""
+    t = (tone or '').lower()
+    if re.search(r'whisper|barely audible|hushed|fading', t):
+        return -27
+    if re.search(r'soft|quiet|sleepy|murmur|mumble|mutter|sigh|tired|exhausted', t):
+        return -21
+    if re.search(r'shout|ecstatic|cheering|overjoyed|squeal|loud|triumphant', t):
+        return -15
+    return -18
+
+
+def encode_mp3(wav, sr, dst, loud=-18):
     import numpy as np
     pcm = (np.clip(wav, -1, 1) * 32767).astype('<i2').tobytes()
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 's16le', '-ar', str(sr), '-ac', '1', '-i', 'pipe:0',
-                    '-af', 'silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:start_threshold=-50dB,areverse,loudnorm=I=-18:TP=-2,areverse,apad=pad_dur=0.12,areverse,apad=pad_dur=0.15',
+                    '-af', f'silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:start_threshold=-50dB,areverse,loudnorm=I={loud}:TP=-2,areverse,apad=pad_dur=0.12,areverse,apad=pad_dur=0.15',
                     '-ar', '24000', '-c:a', 'libmp3lame', '-b:a', '40k', str(dst)], input=pcm, check=True)
     out = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', str(dst)],
                          capture_output=True, text=True, check=True)
@@ -157,7 +199,10 @@ def main():
         text = speech_text(n)
         if not re.search(r'[가-힣A-Za-z0-9]', text):
             continue
-        fid = hashlib.sha1(f"{ref_sig[vk]}|{text}".encode()).hexdigest()[:12]
+        tone = tone_for(n)
+        flat = vk == '시스템'
+        # 파일명 = 기준 음성 서명 + 감정 지시 + 대사 해시 — 셋 중 하나라도 바뀌면 다시 만든다
+        fid = hashlib.sha1(f"{ref_sig[vk]}|{tone or ''}|{'flat' if flat else ''}|{text}".encode()).hexdigest()[:12]
         dst = OUT / f'{fid}.mp3'
         k = line_key(n)
         if dst.exists() and k in manifest and manifest[k]['f'] == dst.name and k not in retake:
@@ -165,8 +210,14 @@ def main():
         v = voices[vk]
         best = None
         for t in range(a.tries if checker else 1):
-            wav = model.generate(text=text, prompt_wav_path=str(REF / f'{vk}.wav'), prompt_text=v['sample'],
-                                 reference_wav_path=str(REF / f'{vk}.wav'), cfg_value=2.0, inference_timesteps=10)
+            if tone:  # 스타일 지시 복제: 기준 음성의 음색 + 괄호 안 감정·말투
+                wav = model.generate(text=f'({tone}){text}', reference_wav_path=str(REF / f'{vk}.wav'),
+                                     cfg_value=2.0, inference_timesteps=10)
+            else:     # 지시가 없으면 기준 음성을 이어 읽는 복제(말투까지 기준 음성 그대로)
+                wav = model.generate(text=text, prompt_wav_path=str(REF / f'{vk}.wav'), prompt_text=v['sample'],
+                                     reference_wav_path=str(REF / f'{vk}.wav'), cfg_value=2.0, inference_timesteps=10)
+            if flat:
+                wav = flatten_pitch(wav, sr)
             sc, hyp = checker.score(wav, sr, text) if checker else (0.0, '')
             # 너무 길게 늘어진 것(글자당 0.4초 이상)도 실패로 본다
             if len(wav) / sr > 0.4 * max(4, len(_norm(text))) + 1.5:
@@ -176,11 +227,15 @@ def main():
             if sc <= 0.12:
                 break
         sc, hyp, wav = best
-        dur = encode_mp3(wav, sr, dst)
+        dur = encode_mp3(wav, sr, dst, loudness_for(tone))
         keep[k] = {'f': dst.name, 'd': dur}; made += 1
         if checker:
             qa[k] = {'cer': round(sc, 3), 'hyp': hyp, 'said': text}
-        print(f'[{i + 1}/{len(todo)}] {vk} {dur:.1f}s cer={sc:.2f}  {text[:30]}', flush=True)
+        print(f'[{i + 1}/{len(todo)}] {vk} {dur:.1f}s cer={sc:.2f} ({tone or "-"})  {text[:30]}', flush=True)
+        if made % 25 == 0:  # 중간 저장 — 오래 걸리는 생성이 끊겨도 만든 것은 남는다
+            MANIFEST.write_text(json.dumps({**manifest, **keep}, ensure_ascii=False, indent=0), 'utf-8')
+            if checker:
+                QA.write_text(json.dumps(qa, ensure_ascii=False, indent=0), 'utf-8')
 
     if a.only is not None:  # 일부만 돌렸으면 나머지 항목은 그대로 둔다
         manifest.update(keep); keep = manifest

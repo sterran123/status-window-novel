@@ -24,8 +24,8 @@
     "design": "A Korean woman in her early twenties. Casual, brisk and slightly teasing older sister voice",
     "sample": "야, 너 그거 어디서 배웠어? 나 다 먹었어."
   },
-  "친구": {
-    "design": "A Korean high school boy around seventeen. Bright, energetic and chatty voice, playful and quick",
+  "친구 · 준호": {
+    "design": "A Korean high school boy around seventeen. Slightly husky, mid-low voice with a relaxed, cheeky drawl, laid-back and talkative, a little nasal, easygoing friend",
     "sample": "야, 진짜 되네. 어떻게 한 거야? 그럼 나 이제 매일 학원 다녀도 되는 거야?"
   },
   "아이": {
@@ -53,7 +53,7 @@
     "sample": "아, 이래서 다들 재부팅을 하는 거였구나."
   },
   "시스템": {
-    "design": "A clean, crisp young female announcer voice like a polished game system notification. Neutral, precise and composed, clear articulation, even pace, cool and calm, no emotion",
+    "design": "A flat, monotone female AI voice. Synthetic and robotic computer speech, no intonation and no emotion, every syllable evenly spaced at the same pitch, like a machine text-to-speech system announcement",
     "sample": "시스템 메시지가 도착하였습니다. 메인 퀘스트, 네가 멈춘 지점부터. 진행 오 분의 영."
   },
   "눈꽃": {
