@@ -4,3 +4,4 @@ node_modules/
 Thumbs.db
 주인공얼굴사진/
 __pycache__/
+tools/tts/ref/candidates/

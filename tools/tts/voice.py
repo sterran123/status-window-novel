@@ -16,7 +16,7 @@
 import argparse, hashlib, json, os, re, subprocess, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from pron import pronounce
+from pron import pronounce, sys_text
 
 ROOT = Path(__file__).resolve().parents[2]
 TTS = ROOT / 'tools' / 'tts'
@@ -27,9 +27,17 @@ QA = TTS / 'qa.json'
 YOUNG = {'CH01', 'BR_child01'}  # 학창 시절 장면의 지혁은 소년 목소리
 
 
+def voiced(node):
+    """음성을 붙이는 노드 — 대사·아리아·채팅 기록·시스템 메시지 (나레이션·상태창은 읽지 않음)"""
+    t = node['type']
+    return (t == 'msg' and node['speaker'] != '나레이션') or t in ('aria', 'chatline', 'sys')
+
+
 def voice_key(node):
     if node['type'] == 'aria':
         return '아리아'
+    if node['type'] == 'sys':
+        return '시스템'
     sp = node['speaker']
     if sp == '지혁' and node.get('chapter') in YOUNG:
         return '지혁_소년'
@@ -37,16 +45,24 @@ def voice_key(node):
 
 
 def line_key(node):
-    """뷰어(novel.js voiceKey)와 같은 규칙 — 장\t화자\t대사"""
-    sp = '아리아' if node['type'] == 'aria' else node['speaker']
+    """뷰어(novel.js voiceKey)와 같은 규칙 — 장\t화자\t대사 (채팅 기록은 화자 앞에 '-')"""
+    t = node['type']
+    sp = '아리아' if t == 'aria' else '시스템' if t == 'sys' else ('-' if t == 'chatline' else '') + node['speaker']
     return f"{node.get('chapter', '')}\t{sp}\t{node['text']}"
 
 
 def clean(text):
     t = text.replace('……', '…').replace('——', ', ').replace(' — ', ', ').replace('—', ', ')
     t = re.sub(r'[「」『』《》]', '', t)
-    t = re.sub(r'ㅋ{2,}', '', t).strip()
+    t = re.sub(r'[ㅋㅎㄷㅠㅜ]+', '', t).strip()  # 채팅의 ㅋㅋ·ㄷㄷ·ㅠㅠ는 읽지 않는다
+    t = re.sub(r'(^|\s)/(?=[가-힣A-Za-z])', r'\1', t)  # 채팅 명령어 '/핑'의 슬래시는 읽지 않는다
     return t
+
+
+def speech_text(node):
+    if node['type'] == 'sys':
+        return sys_text(node['text'])
+    return pronounce(clean(node['text']))  # 화면 글은 그대로, 읽을 때만 숫자·약어를 소리대로
 
 
 _norm = lambda s: re.sub(r'[^가-힣A-Za-z0-9]', '', s).lower()
@@ -103,7 +119,7 @@ def main():
 
     voices = {k: v for k, v in json.loads((TTS / 'voices.json').read_text('utf-8')).items() if not k.startswith('_')}
     story = json.loads((ROOT / 'story' / 'story.json').read_text('utf-8'))
-    lines = [n for n in story['nodes'] if (n['type'] == 'msg' and n['speaker'] != '나레이션') or n['type'] == 'aria']
+    lines = [n for n in story['nodes'] if voiced(n)]
     OUT.mkdir(parents=True, exist_ok=True); REF.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(MANIFEST.read_text('utf-8')) if MANIFEST.exists() else {}
 
@@ -138,7 +154,7 @@ def main():
         vk = voice_key(n)
         if vk not in voices:
             print(f'  ! 목소리 없음: {vk}', flush=True); continue
-        text = pronounce(clean(n['text']))  # 화면 글은 그대로, 읽을 때만 숫자·약어를 소리대로
+        text = speech_text(n)
         if not re.search(r'[가-힣A-Za-z0-9]', text):
             continue
         fid = hashlib.sha1(f"{ref_sig[vk]}|{text}".encode()).hexdigest()[:12]

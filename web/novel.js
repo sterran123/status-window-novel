@@ -560,8 +560,8 @@ function drawNode(n) {
       const cont = chat.lastElementChild && chat.lastElementChild.classList.contains('aria');
       return markVoice(n, el('bubble aria' + (cont ? ' cont' : ''), `<span class="who">아리아</span><span class="tx">${nl(n.text)}</span>`));
     }
-    case 'chatline': return el('bubble chatline', `<span class="who">${esc(n.speaker)}</span><span class="tx">${nl(n.text)}</span>`);
-    case 'sys': return el('bubble sys', nl(n.text));
+    case 'chatline': return markVoice(n, el('bubble chatline', `<span class="who">${esc(n.speaker)}</span><span class="tx">${nl(n.text)}</span>`));
+    case 'sys': return markVoice(n, el('bubble sys', nl(n.text)));
     case 'status': return el('bubble status', statusCompactHTML(n.display, prevStatusText(n)));
     case 'scene': return el('scene-divider', '＊ ＊ ＊');
   }
@@ -584,7 +584,7 @@ function renderNode(n) {
     case 'choice': return renderChoice(n);
     case 'end': return renderEnd(n);
     case 'goto': return advance();
-    default: { const d = drawNode(n); if (d && d.classList.contains('voiced')) playVoice(n, d); else if (!S.voicewait && /^(msg|aria)$/.test(n.type) && n.speaker !== '나레이션') stopVoice(); }
+    default: { const d = drawNode(n); if (d && d.classList.contains('voiced')) playVoice(n, d); else if (!S.voicewait && isVoiceType(n)) stopVoice(); }
   }
   preloadVoices(n);
   STATE = 'flow'; dock.classList.remove('hide');
@@ -641,7 +641,9 @@ function renderEnd(n) {
 let VOICES = null, VOICE_LOADING = null, SPEAKING = null; // SPEAKING: {node, el, until}
 const AUDIO = new Audio(); AUDIO.preload = 'auto';
 const PRELOAD = new Map();
-const voiceKey = n => `${n.chapter || ''}\t${n.type === 'aria' ? '아리아' : n.speaker}\t${n.text}`;
+// tools/tts/voice.py line_key와 같은 규칙 — 장\t화자\t글 (채팅 기록은 화자 앞에 '-', 시스템 메시지는 '시스템')
+const voiceKey = n => `${n.chapter || ''}\t${n.type === 'aria' ? '아리아' : n.type === 'sys' ? '시스템' : (n.type === 'chatline' ? '-' : '') + n.speaker}\t${n.text}`;
+const isVoiceType = n => !!n && ((n.type === 'msg' && n.speaker !== '나레이션') || /^(aria|chatline|sys)$/.test(n.type));
 function loadVoices() {
   if (VOICES || VOICE_LOADING) return VOICE_LOADING;
   $('#voice-status').textContent = '음성 목록을 불러오는 중…';
@@ -650,9 +652,10 @@ function loadVoices() {
     .catch(() => { VOICE_LOADING = null; $('#voice-status').textContent = '음성 파일을 찾지 못했습니다.'; });
 }
 function voiceFor(n) {
-  if (!S.voice || !VOICES || !n || !/^(msg|aria)$/.test(n.type) || n.speaker === '나레이션') return null;
-  if (S.voicewho === 'aria' && n.type !== 'aria') return null;
-  if (S.voicewho === 'people' && n.type === 'aria') return null;
+  if (!S.voice || !VOICES || !isVoiceType(n)) return null;
+  const machine = n.type === 'aria' || n.type === 'sys';      // 아리아·시스템 = 창의 목소리
+  if (S.voicewho === 'aria' && !machine) return null;
+  if (S.voicewho === 'people' && machine) return null;
   return VOICES[voiceKey(n)] || null;
 }
 // 음성이 있는 말풍선에 '다시 듣기' 버튼

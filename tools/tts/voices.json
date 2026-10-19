@@ -13,11 +13,11 @@
     "sample": "당신이 잊은 것들을, 제가 기억하고 있습니다. 그러니 한번, 돌아보는 밤으로 바꿉시다."
   },
   "아버지": {
-    "design": "A Korean man in his late fifties. Deep, gruff and low voice, a man of few words, blunt but warm underneath",
+    "design": "An elderly Korean father in his early sixties. Mature, aged and deep baritone voice with a slightly hoarse, gravelly texture, slow and weighty speech, clearly an older man with grey hair, not young",
     "sample": "회사에서 새 걸 받았어. 버리긴 아깝고, 네가 쓸 수 있으면 써 봐."
   },
   "어머니": {
-    "design": "A Korean woman in her early fifties. Warm motherly voice with a worried, slightly nagging tone, speaks a little quickly",
+    "design": "A Korean mother in her late fifties. Mature, middle-aged female voice, slightly low and husky, warm but worried and a little nagging, clearly an older woman, not young, not girlish",
     "sample": "저거 주고 나면 밤마다 방에만 있을 거 아냐. 밤은 자면서 해."
   },
   "누나": {
@@ -51,5 +51,37 @@
   "동료": {
     "design": "A Korean woman in her early thirties. Friendly, relieved and slightly surprised voice",
     "sample": "아, 이래서 다들 재부팅을 하는 거였구나."
+  },
+  "시스템": {
+    "design": "A clean, crisp young female announcer voice like a polished game system notification. Neutral, precise and composed, clear articulation, even pace, cool and calm, no emotion",
+    "sample": "시스템 메시지가 도착하였습니다. 메인 퀘스트, 네가 멈춘 지점부터. 진행 오 분의 영."
+  },
+  "눈꽃": {
+    "design": "A Korean woman in her mid twenties. Bright, gentle and friendly voice, a little playful, casual chat tone",
+    "sample": "방장님, 알림이 왜 두 번씩 와요? 여기 조용해서 좋다."
+  },
+  "은우": {
+    "design": "A Korean man in his mid twenties. Soft, friendly and warm voice, easygoing and curious, casual tone",
+    "sample": "방장은 잠 안 자요? 그럼 잘 살펴주세요, 방장님."
+  },
+  "민재": {
+    "design": "A Korean man in his late twenties. Playful, blunt and teasing voice, laid-back and quick, casual slang tone",
+    "sample": "방장 이 방 직접 만든 거임? 와 대박, 그럼 여기 완전 사유지네."
+  },
+  "사용자1": {
+    "design": "A Korean man in his early thirties. Ordinary, mild and polite voice, casual chat tone",
+    "sample": "어? 봇이 빨라졌어요. 뭐 바꾼 거예요?"
+  },
+  "사용자2": {
+    "design": "A Korean woman in her early twenties. Light, cheerful and quick voice, casual chat tone",
+    "sample": "오늘 명령어 안 씹히는데요. 엔진 교체하신 거예요?"
+  },
+  "사용자3": {
+    "design": "A Korean woman in her early thirties. Calm, polite and slightly shy voice",
+    "sample": "방장님, 공지 알림이 안 온 것 같아요. 눈팅만 하다가 처음 씁니다."
+  },
+  "봇": {
+    "design": "A flat synthetic robot voice, monotone and mechanical, short and clipped, like a simple chat bot",
+    "sample": "퐁. 서울 맑음 이십팔 도."
   }
 }

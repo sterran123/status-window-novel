@@ -230,6 +230,8 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 .vbtn .ic{width:14px;height:14px}
 .vbtn:hover{color:var(--accent);border-color:var(--accent);opacity:1}
 .bubble.me .vbtn{right:auto;left:-9px}
+.bubble.sys.speaking{box-shadow:0 0 0 2px color-mix(in srgb,var(--sys-line) 55%,transparent),0 0 26px -8px var(--sys-line)}
+.bubble.sys.speaking .vbtn{color:var(--sys-line);border-color:var(--sys-line)}
 .bubble.speaking{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 55%,transparent),var(--shadow)}
 .bubble.aria.speaking{box-shadow:0 0 0 2px color-mix(in srgb,var(--aria) 60%,transparent),0 0 30px -6px var(--aria)}
 .bubble.speaking .vbtn{color:var(--accent);border-color:var(--accent);animation:vpulse 1.1s ease-in-out infinite}
