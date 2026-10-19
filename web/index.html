@@ -42,6 +42,8 @@
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-minus" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 010 6M18.3 6.5a8 8 0 010 11"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></symbol>
 </svg>
 
 <!-- 표지 -->
@@ -72,6 +74,7 @@
     <div class="brand-sub" id="brand-sub">권지혁 이야기</div>
   </div>
   <nav class="topnav">
+    <button id="btn-voice" class="icon-btn off" aria-label="대사 음성" title="대사 음성 켜기/끄기 (V)"><svg class="ic"><use href="#i-mute"/></svg><span class="lbl">음성</span></button>
     <button id="btn-auto" class="icon-btn" aria-label="자동 읽기" title="자동 읽기 켜기/끄기 (A)"><svg class="ic"><use href="#i-pause"/></svg><span class="lbl">자동</span></button>
     <button id="btn-status" class="icon-btn" aria-label="상태창" title="상태창 (I)"><svg class="ic"><use href="#i-status"/></svg><span class="lbl">상태창</span></button>
     <button id="btn-settings" class="icon-btn" aria-label="보기 설정" title="보기 설정 (S)"><svg class="ic"><use href="#i-sliders"/></svg><span class="lbl">설정</span></button>
@@ -154,13 +157,33 @@
       </div>
       <div class="set-row">
         <span class="set-label">자동 읽기 속도 <em id="speed-label">보통</em></span>
-        <div class="range-row"><span>느긋하게</span><input type="range" id="set-speed" min="0" max="6" step="1"><span>빠르게</span></div>
+        <div class="range-row"><span>천천히</span><input type="range" id="set-speed" min="0" max="8" step="1"><span>빠르게</span></div>
+        <div class="set-hint">한 문장을 다 읽을 만큼 머문 뒤 넘어갑니다. 아래 막대의 −/＋로도 한 칸씩 바꿀 수 있습니다.</div>
       </div>
       <div class="set-row">
         <span class="set-label">보기 방식</span>
         <div class="seg" data-key="layout">
           <button data-v="chat">채팅 말풍선</button><button data-v="book">소설 본문</button>
         </div>
+      </div>
+    </section>
+
+    <section class="set-sec">
+      <h4 class="sec-h">음성</h4>
+      <label class="toggle"><input type="checkbox" id="set-voice"><span>대사 음성 듣기 <em>인물마다 다른 목소리로 대사를 읽어 줍니다 · 나레이션은 읽지 않습니다</em></span></label>
+      <div id="voice-opts">
+        <div class="set-row">
+          <span class="set-label">듣는 대사</span>
+          <div class="seg" data-key="voicewho">
+            <button data-v="all">모든 인물</button><button data-v="aria">아리아만</button><button data-v="people">사람만</button>
+          </div>
+        </div>
+        <div class="set-row">
+          <span class="set-label">음량 <em id="vol-label">80%</em></span>
+          <div class="range-row"><span>작게</span><input type="range" id="set-vol" min="5" max="100" step="5"><span>크게</span></div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="set-voicewait"><span>자동 읽기에서 대사가 끝날 때까지 기다리기 <em>끄면 읽기 속도대로 넘어가고, 다음 대사가 나오면 앞 음성은 멈춥니다</em></span></label>
+        <div class="set-hint" id="voice-status"></div>
       </div>
     </section>
 
@@ -219,7 +242,7 @@
       <dl class="keys">
         <dt>Space · Enter · →</dt><dd>다음 문장</dd>
         <dt>1 ~ 4</dt><dd>선택지 고르기</dd>
-        <dt>A</dt><dd>자동 읽기 켜기/끄기</dd>
+        <dt>A · V</dt><dd>자동 읽기 · 대사 음성 켜기/끄기</dd>
         <dt>T · I · S</dt><dd>목차 · 상태창 · 설정</dd>
         <dt>Esc</dt><dd>창 닫기</dd>
       </dl>

@@ -1,0 +1,55 @@
+{
+  "_설명": "인물별 목소리. design = VoxCPM2 보이스 디자인 묘사(괄호 안에 들어감), sample = 기준 음성으로 읽힐 문장. 묘사를 바꾸면 그 인물의 ref와 대사가 다시 만들어진다.",
+  "지혁": {
+    "design": "A Korean man in his early thirties. Calm, low and slightly husky voice, quiet and a little tired, speaks briefly and sincerely, natural conversational tone",
+    "sample": "그냥 순서를 적어 준 건데. 원인만 찾으면 돼요. 로그부터 보여 줄래요?"
+  },
+  "지혁_소년": {
+    "design": "A Korean teenage boy around fifteen. Soft, clear and quiet voice, a bit shy and reserved, speaks plainly",
+    "sample": "아니요, 제가 시킨 거예요. 그럼 제가 고치면 되죠."
+  },
+  "아리아": {
+    "design": "A gentle young female AI narrator voice. Clear, calm and warm, slightly ethereal and soft, speaks slowly and precisely with tender pauses",
+    "sample": "당신이 잊은 것들을, 제가 기억하고 있습니다. 그러니 한번, 돌아보는 밤으로 바꿉시다."
+  },
+  "아버지": {
+    "design": "A Korean man in his late fifties. Deep, gruff and low voice, a man of few words, blunt but warm underneath",
+    "sample": "회사에서 새 걸 받았어. 버리긴 아깝고, 네가 쓸 수 있으면 써 봐."
+  },
+  "어머니": {
+    "design": "A Korean woman in her early fifties. Warm motherly voice with a worried, slightly nagging tone, speaks a little quickly",
+    "sample": "저거 주고 나면 밤마다 방에만 있을 거 아냐. 밤은 자면서 해."
+  },
+  "누나": {
+    "design": "A Korean woman in her early twenties. Casual, brisk and slightly teasing older sister voice",
+    "sample": "야, 너 그거 어디서 배웠어? 나 다 먹었어."
+  },
+  "친구": {
+    "design": "A Korean high school boy around seventeen. Bright, energetic and chatty voice, playful and quick",
+    "sample": "야, 진짜 되네. 어떻게 한 거야? 그럼 나 이제 매일 학원 다녀도 되는 거야?"
+  },
+  "아이": {
+    "design": "A Korean middle school boy around fifteen. Young, curious voice, a little shy at first then cheerful",
+    "sample": "그거 나도 되게 해 줘. 이거 다른 애들한테도 알려 줘도 돼?"
+  },
+  "반 친구": {
+    "design": "A Korean middle school boy around fifteen. Loud, lively and excited voice",
+    "sample": "이거 누가 만든 거야. 나도 되게 해 달라고 해야지."
+  },
+  "태윤": {
+    "design": "A Korean man in his mid twenties. Polite, tidy and earnest voice, calm and organized, gentle speech",
+    "sample": "제 식비 장부도요. 데이터가 서로 물려야 하는 구조네요."
+  },
+  "태우": {
+    "design": "A Korean man in his mid twenties. Bright, excitable and cheerful voice, talks fast with lots of energy",
+    "sample": "가 보자고요! 이번엔 두 마리 동시에 잡았다!"
+  },
+  "윤재목": {
+    "design": "A Korean man in his mid fifties. Relaxed, slow and warm mentor voice, gentle authority, unhurried",
+    "sample": "기록은 사실을 담고, 각색은 진실을 담지. 형식은 제한 두지 마. 밀어붙여."
+  },
+  "동료": {
+    "design": "A Korean woman in her early thirties. Friendly, relieved and slightly surprised voice",
+    "sample": "아, 이래서 다들 재부팅을 하는 거였구나."
+  }
+}

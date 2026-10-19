@@ -9,8 +9,10 @@ let TIMER = null, CUR_ILLUS = null, LOCK = false, STATE = null; // STATE: 'flow'
 let FIRST = {}, MAIN_CH = [], PARENT = {}; // PARENT: 사이드 씬 → 그 씬으로 갈라지는 본선 장
 
 /* ── 설정 ───────────────────────────────────────── */
-const SPEEDS = [1.8, 1.4, 1.15, 1, 0.85, 0.72, 0.6]; // 문장 머무름 배율 — 클수록 천천히
-const SPEED_NAMES = ['아주 느긋하게', '느긋하게', '조금 느긋하게', '보통', '조금 빠르게', '빠르게', '아주 빠르게'];
+// 자동 읽기 속도 = 초당 읽는 글자(음절) 수. 한국어로 내용을 이해하며 읽는 속도는 대략 초당 6~9자
+const SPEEDS = [3.5, 4.5, 5.5, 6.3, 7, 8, 9.5, 11.5, 14];
+const SPEED_NAMES = ['아주 천천히', '천천히', '느긋하게', '조금 느긋하게', '보통', '조금 빠르게', '빠르게', '아주 빠르게', '훑어보기'];
+const SPEED_NORMAL = 7, SPEED_PICK = { slow: 5.5, normal: 7, fast: 9.5 }; // 첫 안내 화면 선택값 — 양쪽으로 더 조절할 여지를 남긴다
 const FONTS = {
   pretendard: { label: '프리텐다드', note: '깔끔한 고딕', stack: "'Pretendard Variable',Pretendard,'Noto Sans KR',system-ui,sans-serif" },
   notoserif: { label: '본명조', note: '단정한 명조', g: 'Noto+Serif+KR:wght@400;600;700', stack: "'Noto Serif KR',serif" },
@@ -19,13 +21,19 @@ const FONTS = {
   gowundodum: { label: '고운돋움', note: '둥근 돋움', g: 'Gowun+Dodum', stack: "'Gowun Dodum',sans-serif" },
   ibmplex: { label: 'IBM Plex', note: '단단한 고딕', g: 'IBM+Plex+Sans+KR:wght@400;600', stack: "'IBM Plex Sans KR',sans-serif" },
 };
-const DEF = { auto: true, speed: 1, layout: 'chat', font: 'pretendard', size: 17, lh: 1.85, width: 'normal',
-  theme: 'dark', illus: 'big', motion: 'auto', wake: true };
+const DEF = { auto: true, cps: SPEED_NORMAL, layout: 'chat', font: 'pretendard', size: 17, lh: 1.85, width: 'normal',
+  theme: 'dark', illus: 'big', motion: 'auto', wake: true, voice: false, vol: 0.8, voicewho: 'all', voicewait: true };
 let S = { ...DEF };
 
-function loadSettings() { try { const s = JSON.parse(localStorage.getItem(SET_KEY)); if (s) S = { ...DEF, ...s }; } catch (e) {} }
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SET_KEY));
+    if (s) { S = { ...DEF, ...s }; if (s.cps == null && s.speed) S.cps = SPEED_NORMAL / s.speed; delete S.speed; } // 구버전 '머무름 배율' 설정 변환
+  } catch (e) {}
+}
 function saveSettings() { try { localStorage.setItem(SET_KEY, JSON.stringify(S)); } catch (e) {} }
-const speedIdx = () => { let b = 3, d = 9; SPEEDS.forEach((v, i) => { if (Math.abs(v - S.speed) < d) { d = Math.abs(v - S.speed); b = i; } }); return b; };
+const speedIdx = () => { let b = 4, d = 99; SPEEDS.forEach((v, i) => { if (Math.abs(v - S.cps) < d) { d = Math.abs(v - S.cps); b = i; } }); return b; };
+const speedText = i => `${SPEED_NAMES[i]} · 분당 ${Math.round(SPEEDS[i] * 60)}자`;
 const reduced = () => S.motion === 'reduce' || matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function loadCss(href, id) {
@@ -41,11 +49,13 @@ function applySettings() {
   ROOT.style.setProperty('--font', f.stack);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.content = getComputedStyle(ROOT).getPropertyValue('--bg').trim() || '#0d0f15';
-  syncAutoUI(); syncWake();
+  syncAutoUI(); syncVoiceUI(); syncWake();
 }
 function setOpt(k, v) {
   S[k] = v; saveSettings(); applySettings(); syncSettingsUI();
-  if (k === 'speed' || k === 'auto') { cancelTimer(); resume(); }
+  if (k === 'cps' || k === 'auto') { cancelTimer(); resume(); }
+  if (k === 'voice') { if (v) { VOICES ? markExisting() : loadVoices(); } else stopVoice(); }
+  if (k === 'vol') AUDIO.volume = v;
 }
 
 /* ── 저장 ───────────────────────────────────────── */
@@ -70,7 +80,7 @@ const addUniq = (arr, v) => { if (v && !arr.includes(v)) arr.push(v); };
 
 /* ── 시작 ───────────────────────────────────────── */
 async function init() {
-  loadSettings(); applySettings();
+  loadSettings(); applySettings(); if (S.voice) loadVoices();
   try { STORY = await (await fetch('../story/story.json')).json(); }
   catch (e) { chat.innerHTML = '<div class="bubble narration">이야기를 불러오지 못했습니다. 로컬에서는 <b>node tools/serve.js</b>로 열어 주세요.</div>'; return; }
   STORY.nodes.forEach((n, i) => { n._i = i; BYID.set(n.id, n); if (n.chapter && !FIRST[n.chapter]) FIRST[n.chapter] = n.id; });
@@ -87,9 +97,21 @@ async function init() {
 function bindUI() {
   $('#btn-next').onclick = () => { cancelTimer(); advance(); };
   $('#btn-auto').onclick = () => toggleAuto();
+  $('#btn-voice').onclick = () => toggleVoice();
+  $('#set-voice').onchange = e => setOpt('voice', e.target.checked);
+  $('#set-voicewait').onchange = e => setOpt('voicewait', e.target.checked);
+  $('#set-vol').oninput = e => setOpt('vol', +e.target.value / 100);
+  // 다시 듣기 버튼
+  chat.addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (b) { e.stopPropagation(); replayVoice(b.closest('.bubble')); } });
+  // 모바일 사파리 등: 첫 터치 때 오디오 재생 권한을 열어 둔다
+  addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
   $('#dock-pause').onclick = () => toggleAuto();
-  $('#dock-slower').onclick = () => setOpt('speed', SPEEDS[Math.max(0, speedIdx() - 1)]);
-  $('#dock-faster').onclick = () => setOpt('speed', SPEEDS[Math.min(SPEEDS.length - 1, speedIdx() + 1)]);
+  const stepSpeed = dir => {
+    const i = Math.max(0, Math.min(SPEEDS.length - 1, speedIdx() + dir));
+    setOpt('cps', SPEEDS[i]); toast(speedText(i));
+  };
+  $('#dock-slower').onclick = () => stepSpeed(-1);
+  $('#dock-faster').onclick = () => stepSpeed(1);
   $('#btn-settings').onclick = () => openPanel('settings-panel');
   $('#btn-toc').onclick = () => openToc();
   $('#btn-status').onclick = () => { $('#status-body').textContent = currentStatusText(); openPanel('status-panel'); };
@@ -115,7 +137,7 @@ function bindUI() {
     if (k === 'auto') v = v === 'true'; else if (k === 'lh') v = +v;
     setOpt(k, v);
   }));
-  $('#set-speed').oninput = e => setOpt('speed', SPEEDS[+e.target.value]);
+  $('#set-speed').oninput = e => setOpt('cps', SPEEDS[+e.target.value]);
   $('#set-size').oninput = e => setOpt('size', +e.target.value);
   $('#size-dec').onclick = () => setOpt('size', Math.max(14, S.size - 1));
   $('#size-inc').onclick = () => setOpt('size', Math.min(24, S.size + 1));
@@ -143,7 +165,7 @@ function bindUI() {
   spd.forEach(b => b.onclick = () => pick(spd, b));
   $('#btn-intro-start').onclick = () => {
     S.auto = $('#intro-auto').classList.contains('on');
-    S.speed = $('#intro-slow').classList.contains('on') ? 1.4 : $('#intro-fast').classList.contains('on') ? 0.72 : 1;
+    S.cps = SPEED_PICK[$('#intro-slow').classList.contains('on') ? 'slow' : $('#intro-fast').classList.contains('on') ? 'fast' : 'normal'];
     saveSettings(); applySettings();
     $('#intro-panel').hidden = true; hideCover(); startFresh();
   };
@@ -165,7 +187,7 @@ function bindUI() {
 
   // 탭 전환·창 닫기 → 자동 저장 + 일시정지, 돌아오면 재개
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { cancelTimer(); writeSave(); } else { resume(); }
+    if (document.hidden) { cancelTimer(); writeSave(); if (!AUDIO.paused) AUDIO.pause(); } else { resume(); }
     syncWake();
   });
   window.addEventListener('pagehide', writeSave);
@@ -185,6 +207,7 @@ function onKey(e) {
   if (lk === 'f') { toggleFullscreen(); return; }
   if (anyOpen()) return;
   if (lk === 'a') { toggleAuto(); return; }
+  if (lk === 'v') { toggleVoice(); return; }
   if (STATE === 'choice' && /^[1-9]$/.test(k)) { const b = choices.querySelectorAll('button')[+k - 1]; if (b) { e.preventDefault(); b.click(); } return; }
   // 스페이스·엔터·→·↓·볼륨아래(모바일)로 다음 문장
   if ([' ', 'Enter', 'ArrowRight', 'ArrowDown', 'AudioVolumeDown', 'VolumeDown'].includes(k) || e.keyCode === 25) {
@@ -214,9 +237,14 @@ function syncSettingsUI() {
   });
   $$('#font-grid button').forEach(b => b.classList.toggle('on', b.dataset.font === S.font));
   const si = speedIdx();
-  $('#set-speed').value = si; $('#speed-label').textContent = SPEED_NAMES[si]; $('#auto-speed').textContent = SPEED_NAMES[si];
+  $('#set-speed').max = SPEEDS.length - 1; $('#set-speed').value = si;
+  $('#speed-label').textContent = speedText(si); $('#auto-speed').textContent = SPEED_NAMES[si];
+  $('#dock-slower').disabled = si === 0; $('#dock-faster').disabled = si === SPEEDS.length - 1;
   $('#set-size').value = S.size; $('#size-label').textContent = S.size + 'px';
   $('#set-motion').checked = S.motion === 'reduce';
+  $('#set-voice').checked = !!S.voice; $('#set-voicewait').checked = !!S.voicewait;
+  $('#set-vol').value = Math.round(S.vol * 100); $('#vol-label').textContent = Math.round(S.vol * 100) + '%';
+  $('#voice-opts').classList.toggle('dim', !S.voice);
   $('#set-wake').checked = !!S.wake;
 }
 function toggleAuto() { setOpt('auto', !S.auto); toast(S.auto ? '자동 읽기를 켰습니다' : '직접 넘기기로 바꿨습니다'); }
@@ -295,7 +323,7 @@ function openIntro() {
   $('#intro-auto').classList.toggle('on', S.auto); $('#intro-manual').classList.toggle('on', !S.auto);
   $('#intro-speed-row').hidden = !S.auto;
   const si = speedIdx();
-  $('#intro-slow').classList.toggle('on', si <= 1); $('#intro-normal').classList.toggle('on', si >= 2 && si <= 4); $('#intro-fast').classList.toggle('on', si >= 5);
+  $('#intro-slow').classList.toggle('on', si <= 3); $('#intro-normal').classList.toggle('on', si === 4); $('#intro-fast').classList.toggle('on', si >= 5);
   $('#intro-panel').hidden = false; $('#btn-intro-start').focus();
 }
 
@@ -369,22 +397,34 @@ function cancelTimer() {
 function resume() { if (S.auto && STATE === 'flow' && !anyOpen() && !document.hidden) scheduleNext(lastNode()); syncWake(); }
 const lastNode = () => HISTORY[HISTORY.length - 1];
 
-// 문장마다 다른 읽기 시간 — 길이·종류·문장부호를 반영, 설정의 읽기 속도로 조절
+// 읽기 분량 — 한글 1음절 = 1, 영문·숫자 단어는 읽는 데 드는 품만큼 더한다
+function readUnits(t) {
+  t = String(t || '');
+  const hangul = (t.match(/[가-힣]/g) || []).length;
+  const latin = (t.match(/[A-Za-z][A-Za-z'_-]*/g) || []).reduce((a, w) => a + Math.min(4, 1 + w.length / 4), 0);
+  const nums = (t.match(/\d[\d,.:/]*/g) || []).reduce((a, w) => a + Math.min(3, 0.8 + w.length / 4), 0);
+  const marks = (t.match(/[^\s가-힣A-Za-z\d.,!?…—·]/g) || []).length * 0.25; // 괄호·기호
+  return hangul + latin + nums + marks;
+}
+// 문장마다 '이 정도면 다 읽었겠다' 싶은 시간 — 눈이 새 말풍선으로 옮겨 가는 시간 + 읽는 시간 + 문장부호 숨 고르기
 function delayFor(n) {
-  if (n.type === 'scene') return 900;
-  if (n.type === 'img') return S.illus === 'small' ? 1400 : 2600;
-  const t = (n.text || n.display || n.prompt || '') + '';
-  const rate = n.type === 'msg' ? (n.speaker === '나레이션' ? 28 : 22) : n.type === 'chatline' ? 20 : n.type === 'aria' ? 30 : 26;
-  let d = 420 + t.length * rate;
-  const enders = (t.match(/[.!?…—]/g) || []).length, mids = (t.match(/[,·]/g) || []).length;
-  d += Math.min(1400, enders * 180 + mids * 70);   // 문장부호마다 숨 고르기
-  if (n.type === 'sys' || n.type === 'status') d += 600;
-  d *= (S.speed || 1);                              // speed = 머무름 배율
-  return Math.min(9000, Math.max(480, d));
+  const slow = Math.sqrt(SPEED_NORMAL / S.cps);       // 글자 수와 무관한 대기도 속도 설정을 조금 따른다
+  if (n.type === 'scene') return 1300 * slow;
+  if (n.type === 'img') return (S.illus === 'small' ? 2400 : 4800) * slow;
+  const t = n.type === 'status' ? statusCompactHTML(n.display, prevStatusText(n)).replace(/<[^>]+>/g, ' ') : (n.text || n.display || '');
+  let d = 650 * slow + readUnits(t) / S.cps * 1000;
+  const enders = (t.match(/[.!?…]+/g) || []).length, mids = (t.match(/[,·—]/g) || []).length, lines = (t.match(/\n/g) || []).length;
+  d += (enders * 260 + mids * 110 + lines * 160) * slow;           // 문장이 끝날 때마다 숨 고르기
+  if (n.type === 'sys' || n.type === 'status') d = d * 1.2 + 900 * slow; // 고정폭 목록은 훑어 읽는 데 더 걸린다
+  if (n.type === 'aria') d *= 1.08;                                 // 시스템의 말은 한 박자 더 머문다
+  if (n.chapter && FIRST[n.chapter] === n.id) d += 1800 * slow;     // 장 표제를 읽을 시간
+  return Math.min(30000, Math.max(1400 * slow, d));
 }
 function scheduleNext(n) {
   if (!S.auto || TIMER || !n || STATE !== 'flow') return;
-  const d = delayFor(n);
+  let d = delayFor(n);
+  // 대사 음성이 나오는 중이면 끝날 때까지(+숨 한 번) 기다린다
+  if (S.voicewait && SPEAKING && SPEAKING.node === n) d = Math.max(d, SPEAKING.until - Date.now() + 450);
   TIMER = setTimeout(() => { TIMER = null; advance(); }, d);
   const m = $('#auto-meter');
   m.style.transition = 'none'; m.style.width = '0'; void m.offsetWidth;
@@ -411,7 +451,7 @@ function updateTop(n) {
 
 /* ── 렌더 ────────────────────────────────────────── */
 function stopReading() {
-  cancelTimer(); STATE = null; LOCK = false; CUR_ILLUS = null; chat.innerHTML = ''; choices.innerHTML = ''; HISTORY = []; SEEN.clear();
+  cancelTimer(); stopVoice(); STATE = null; LOCK = false; CUR_ILLUS = null; chat.innerHTML = ''; choices.innerHTML = ''; HISTORY = []; SEEN.clear();
   dock.classList.add('hide'); stickBottom = true; $('#btn-latest').hidden = true; scrollTo(0, 0);
 }
 function startFresh() { SAVE.pos = null; writeSave(); jumpTo(STORY.start); }
@@ -514,11 +554,11 @@ function drawNode(n) {
     case 'msg': {
       const isN = n.speaker === '나레이션', isMe = n.speaker === STORY.protagonist;
       const who = isN ? '' : `<span class="who">${esc(n.speaker)}</span>`;
-      return el('bubble ' + (isN ? 'narration' : isMe ? 'me' : 'other'), `${who}<span class="tx">${nl(n.text)}</span>`);
+      return markVoice(n, el('bubble ' + (isN ? 'narration' : isMe ? 'me' : 'other'), `${who}<span class="tx">${nl(n.text)}</span>`));
     }
     case 'aria': { // 아리아가 연달아 말하면 이름표는 첫 말풍선에만
       const cont = chat.lastElementChild && chat.lastElementChild.classList.contains('aria');
-      return el('bubble aria' + (cont ? ' cont' : ''), `<span class="who">아리아</span><span class="tx">${nl(n.text)}</span>`);
+      return markVoice(n, el('bubble aria' + (cont ? ' cont' : ''), `<span class="who">아리아</span><span class="tx">${nl(n.text)}</span>`));
     }
     case 'chatline': return el('bubble chatline', `<span class="who">${esc(n.speaker)}</span><span class="tx">${nl(n.text)}</span>`);
     case 'sys': return el('bubble sys', nl(n.text));
@@ -544,8 +584,9 @@ function renderNode(n) {
     case 'choice': return renderChoice(n);
     case 'end': return renderEnd(n);
     case 'goto': return advance();
-    default: drawNode(n);
+    default: { const d = drawNode(n); if (d && d.classList.contains('voiced')) playVoice(n, d); else if (!S.voicewait && /^(msg|aria)$/.test(n.type) && n.speaker !== '나레이션') stopVoice(); }
   }
+  preloadVoices(n);
   STATE = 'flow'; dock.classList.remove('hide');
   scheduleNext(n); syncWake();
 }
@@ -594,6 +635,70 @@ function renderEnd(n) {
     else { const c = STORY.nodes.find(x => x.chapter === 'CH11' && x.type === 'choice'); if (c) resumeAt(c.id); }
   };
   chat.appendChild(d); scrollToEnd();
+}
+
+/* ── 대사 음성 (tools/tts/voice.py가 만든 web/voice/*.mp3) ───────── */
+let VOICES = null, VOICE_LOADING = null, SPEAKING = null; // SPEAKING: {node, el, until}
+const AUDIO = new Audio(); AUDIO.preload = 'auto';
+const PRELOAD = new Map();
+const voiceKey = n => `${n.chapter || ''}\t${n.type === 'aria' ? '아리아' : n.speaker}\t${n.text}`;
+function loadVoices() {
+  if (VOICES || VOICE_LOADING) return VOICE_LOADING;
+  $('#voice-status').textContent = '음성 목록을 불러오는 중…';
+  return VOICE_LOADING = fetch('voice/manifest.json').then(r => r.ok ? r.json() : Promise.reject())
+    .then(m => { VOICES = m; $('#voice-status').textContent = `대사 ${Object.keys(m).length}줄에 목소리가 있습니다.`; markExisting(); })
+    .catch(() => { VOICE_LOADING = null; $('#voice-status').textContent = '음성 파일을 찾지 못했습니다.'; });
+}
+function voiceFor(n) {
+  if (!S.voice || !VOICES || !n || !/^(msg|aria)$/.test(n.type) || n.speaker === '나레이션') return null;
+  if (S.voicewho === 'aria' && n.type !== 'aria') return null;
+  if (S.voicewho === 'people' && n.type === 'aria') return null;
+  return VOICES[voiceKey(n)] || null;
+}
+// 음성이 있는 말풍선에 '다시 듣기' 버튼
+function markVoice(n, d) {
+  if (!d) return d;
+  d._node = n;
+  if (!voiceFor(n) || d.classList.contains('voiced')) return d;
+  d.classList.add('voiced');
+  d.insertAdjacentHTML('beforeend', '<button class="vbtn" aria-label="다시 듣기" title="다시 듣기"><svg class="ic"><use href="#i-sound"/></svg></button>');
+  return d;
+}
+function markExisting() { $$('#chat .bubble').forEach(b => { if (b._node && !b.classList.contains('voiced')) markVoice(b._node, b); }); }
+function playVoice(n, d) {
+  const v = voiceFor(n); if (!v) return;
+  stopVoice();
+  AUDIO.src = 'voice/' + v.f; AUDIO.volume = S.vol; AUDIO.currentTime = 0;
+  SPEAKING = { node: n, el: d, until: Date.now() + v.d * 1000 };
+  d.classList.add('speaking');
+  AUDIO.play().catch(() => { SPEAKING = null; d.classList.remove('speaking'); });
+}
+function replayVoice(b) { if (b && b._node) { S.voice ? playVoice(b._node, b) : toast('설정에서 대사 음성을 켜 주세요'); } }
+function stopVoice() {
+  if (!AUDIO.paused) AUDIO.pause();
+  if (SPEAKING && SPEAKING.el) SPEAKING.el.classList.remove('speaking');
+  SPEAKING = null;
+}
+AUDIO.addEventListener('ended', () => { if (SPEAKING && SPEAKING.el) SPEAKING.el.classList.remove('speaking'); SPEAKING = null; });
+// 다음 몇 문장의 음성을 미리 받아 둔다
+function preloadVoices(n) {
+  if (!S.voice || !VOICES) return;
+  let k = n, cnt = 0;
+  for (let i = 0; i < 8 && k && cnt < 3; i++) {
+    k = k.next ? BYID.get(k.next) : STORY.nodes[k._i + 1];
+    const v = voiceFor(k);
+    if (v && !PRELOAD.has(v.f)) { const a = new Audio(); a.preload = 'auto'; a.src = 'voice/' + v.f; PRELOAD.set(v.f, a); cnt++; if (PRELOAD.size > 12) PRELOAD.delete(PRELOAD.keys().next().value); }
+  }
+}
+function unlockAudio() {
+  try { AUDIO.muted = true; AUDIO.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='; AUDIO.play().then(() => { AUDIO.pause(); AUDIO.muted = false; }).catch(() => { AUDIO.muted = false; }); } catch (e) {}
+}
+function toggleVoice() { setOpt('voice', !S.voice); toast(S.voice ? '대사 음성을 켰습니다' : '대사 음성을 껐습니다'); }
+function syncVoiceUI() {
+  const b = $('#btn-voice'); if (!b) return;
+  b.querySelector('use').setAttribute('href', S.voice ? '#i-sound' : '#i-mute');
+  b.classList.toggle('off', !S.voice);
+  b.title = S.voice ? '대사 음성 끄기 (V)' : '대사 음성 켜기 (V)';
 }
 
 // 모든 let/const 선언이 끝난 뒤에 시작한다
