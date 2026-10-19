@@ -68,7 +68,8 @@ function parseFile(file) {
     if (sp) { flush(); blocks.push({ kind: 'speech', who: sp[1].trim(), text: sp[2].trim() }); continue; }
     const ch = /^-\s*([^:：]{1,12})[:：]\s*(.+)$/.exec(t);
     if (ch && !/^-\s+.*\|.*goto/.test(t)) { flush(); blocks.push({ kind: 'chatline', who: ch[1].trim(), text: ch[2].trim() }); continue; }
-    if (/^《/.test(t)) { flush(); blocks.push({ kind: 'aria', text: t.replace(/^《|》$/g, '') }); continue; }
+    // 《》 자체가 아리아의 목소리(월드시트 규칙 5) — 앞에 붙은 "아리아:" 화자 표기는 떼어 표기를 통일
+    if (/^《/.test(t)) { flush(); blocks.push({ kind: 'aria', text: t.replace(/^《|》$/g, '').replace(/^아리아\s*[:：]\s*/, '') }); continue; }
     para.push(L);
   }
   flush();
@@ -157,10 +158,13 @@ for (const e of endingIds) {
 }
 endings.unshift({ id: 'END_TRUE', label: '트루 엔딩', desc: files.end_true ? files.end_true.header.replace(/^\w+\.\s*/, '') : '' });
 
+// 사이드 씬 제목 — 뷰어 목차·상단 표시용
+const sides = branchIds.map(b => ({ id: b, title: files[b].header.replace(/^BR_\w+\.\s*/, '') }));
+
 const storyJson = {
   title: '상태창이 뜬 날', subtitle: '나를 소재로 한 채팅형 장편소설',
   protagonist: '지혁', start: firstNodeOf[chapterIds[0]],
-  chapters, endings, nodes
+  chapters, endings, sides, nodes
 };
 
 /* ---------- manuscript 생성 ---------- */

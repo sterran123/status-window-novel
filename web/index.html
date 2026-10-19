@@ -1,123 +1,284 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>상태창이 뜬 날 — 권지혁 이야기</title>
+<meta name="description" content="선택지마다 결말이 갈리는 채팅형 장편소설. 12장, 4개의 결말.">
+<meta name="theme-color" content="#0d0f15">
 <meta property="og:title" content="상태창이 뜬 날 — 권지혁 이야기">
 <meta property="og:description" content="선택지마다 결말이 갈리는 채팅형 장편소설">
 <meta property="og:image" content="img/cover.jpg">
 <link rel="icon" type="image/jpeg" href="img/jihyeok.jpg">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
+<script>
+// 첫 화면이 그려지기 전에 저장된 읽기 설정(테마·글자)을 먼저 입혀 깜빡임을 막는다
+(function(){try{var s=JSON.parse(localStorage.getItem('novel-settings-v1')||'{}'),h=document.documentElement;
+  if(s.theme)h.dataset.theme=s.theme; if(s.layout)h.dataset.layout=s.layout;
+  if(s.size)h.style.setProperty('--fs',s.size+'px'); if(s.lh)h.style.setProperty('--lh',s.lh);
+}catch(e){}})();
+</script>
 <link rel="stylesheet" href="novel.css">
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></symbol>
+  <symbol id="i-status" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M7.5 13h4M7.5 16.5h8"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 20c.8-3.5 3.3-5.4 6.2-5.4s5.4 1.9 6.2 5.4M15.8 4.8a3.4 3.4 0 010 6.4M18.6 14.9c1.4.8 2.3 2.4 2.7 5.1"/></symbol>
+  <symbol id="i-restart" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 107.5-7.5 7.9 7.9 0 00-5.6 2.4L4.5 8.8"/><path d="M4.5 4v4.8h4.8"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4.5v15M6.5 14l5.5 5.5 5.5-5.5"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3.5H7a2 2 0 00-2 2v13a2 2 0 002 2h10a2 2 0 002-2v-10z"/><path d="M14 3.5v5h5M9 13h6M9 16.5h4"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></symbol>
+</svg>
+
+<!-- 표지 -->
 <aside id="cover" class="cover" hidden>
-  <img class="cover-img" src="img/cover.jpg" alt="표지 — 상태창이 뜬 날">
+  <img class="cover-img" src="img/cover.jpg" alt="">
   <div class="cover-shade"></div>
   <div class="cover-inner">
     <div class="cover-badge">선택형 채팅 소설</div>
-    <h1 class="cover-title">상태창이 뜬 날</h1>
+    <h1 class="cover-title">상태창이<br>뜬 날</h1>
     <div class="cover-sub">권지혁 이야기 · 12장 · 4개의 결말</div>
     <div class="cover-btns">
       <button id="btn-cover-main" class="cover-btn primary">이야기 시작</button>
-      <button id="btn-cover-fresh" class="cover-btn ghost" hidden>처음부터</button>
-      <button id="btn-cover-cast" class="cover-btn ghost">등장인물</button>
+      <div class="cover-row">
+        <button id="btn-cover-fresh" class="cover-btn ghost" hidden>처음부터</button>
+        <button id="btn-cover-toc" class="cover-btn ghost" hidden>목차</button>
+        <button id="btn-cover-cast" class="cover-btn ghost">등장인물</button>
+      </div>
     </div>
-    <div class="cover-foot">선택지마다 결말이 갈립니다 · 읽던 자리와 설정은 자동 저장됩니다</div>
+    <div class="cover-collect" id="cover-collect"></div>
+    <div class="cover-foot" id="cover-foot">선택지마다 결말이 갈립니다 · 읽던 자리와 설정은 이 기기에 저장됩니다</div>
   </div>
 </aside>
+
 <header class="topbar">
-  <div class="brand">상태창이 뜬 날<em>권지혁 이야기</em></div>
+  <button id="btn-toc" class="icon-btn" aria-label="목차" title="목차 (T)"><svg class="ic"><use href="#i-list"/></svg></button>
+  <div class="brand">
+    <div class="brand-title" id="brand-title">상태창이 뜬 날</div>
+    <div class="brand-sub" id="brand-sub">권지혁 이야기</div>
+  </div>
   <nav class="topnav">
-    <button id="btn-auto" title="자동 재생 켜기/끄기">⏸ 자동</button>
-    <button id="btn-restart" title="처음부터">↺ 처음부터</button>
-    <button id="btn-status" title="상태창">▦ 상태창</button>
-    <button id="btn-settings" title="설정">⚙ 설정</button>
-    <a id="btn-manuscript" href="../manuscript.md" download>원고 받기</a>
+    <button id="btn-auto" class="icon-btn" aria-label="자동 읽기" title="자동 읽기 켜기/끄기 (A)"><svg class="ic"><use href="#i-pause"/></svg><span class="lbl">자동</span></button>
+    <button id="btn-status" class="icon-btn" aria-label="상태창" title="상태창 (I)"><svg class="ic"><use href="#i-status"/></svg><span class="lbl">상태창</span></button>
+    <button id="btn-settings" class="icon-btn" aria-label="보기 설정" title="보기 설정 (S)"><svg class="ic"><use href="#i-sliders"/></svg><span class="lbl">설정</span></button>
   </nav>
+  <div class="progress" aria-hidden="true"><div class="progress-ticks" id="progress-ticks"></div><i id="progress-bar"></i></div>
 </header>
-<div class="progress"><i id="progress-bar"></i></div>
 
 <main class="chat-wrap">
   <div id="chat" class="chat" aria-live="polite"></div>
   <div id="choices" class="choices"></div>
-  <button id="btn-next" class="next-btn">다음 ▸</button>
 </main>
 
-<aside id="status-panel" class="status-panel" hidden>
-  <div class="status-card">
-    <h3>[ STATUS — 상태창 ]</h3>
-    <div class="sub">권지혁의 시스템 창 · 가장 최근 기록을 표시합니다</div>
+<button id="btn-latest" class="latest-pill" hidden><svg class="ic"><use href="#i-down"/></svg>새 문장</button>
+
+<!-- 하단 독: 수동이면 '다음', 자동이면 진행 막대 + 일시정지·속도 -->
+<div class="dock" id="dock">
+  <button id="btn-next" class="next-btn">다음<span class="kbd">Space</span></button>
+  <div class="autobar" id="autobar">
+    <button id="dock-pause" class="dock-icon" aria-label="일시정지"><svg class="ic"><use href="#i-pause"/></svg></button>
+    <div class="auto-meter"><i id="auto-meter"></i></div>
+    <span class="auto-speed" id="auto-speed">보통</span>
+    <button id="dock-slower" class="dock-icon" aria-label="더 느리게"><svg class="ic"><use href="#i-minus"/></svg></button>
+    <button id="dock-faster" class="dock-icon" aria-label="더 빠르게"><svg class="ic"><use href="#i-plus"/></svg></button>
+  </div>
+</div>
+
+<!-- 목차 서랍 -->
+<aside id="toc-panel" class="drawer left" hidden>
+  <div class="drawer-card" role="dialog" aria-modal="true" aria-labelledby="toc-h">
+    <div class="drawer-head">
+      <h3 id="toc-h">목차</h3>
+      <button class="icon-btn close" data-close aria-label="닫기"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="toc-now" id="toc-now"></div>
+    <ol class="toc-list" id="toc-list"></ol>
+    <h4 class="sec-h">결말 도감</h4>
+    <div class="end-grid" id="end-grid"></div>
+    <div class="side-count" id="side-count"></div>
+    <div class="drawer-actions">
+      <button id="btn-restart" class="wide-btn"><svg class="ic"><use href="#i-restart"/></svg>처음부터 다시</button>
+      <button id="btn-open-cast" class="wide-btn"><svg class="ic"><use href="#i-users"/></svg>등장인물</button>
+      <a id="btn-manuscript" class="wide-btn" href="../manuscript.md" download><svg class="ic"><use href="#i-file"/></svg>원고 받기 (.md)</a>
+    </div>
+  </div>
+</aside>
+
+<!-- 상태창 서랍 -->
+<aside id="status-panel" class="drawer right status-drawer" hidden>
+  <div class="drawer-card status-card" role="dialog" aria-modal="true" aria-labelledby="st-h">
+    <div class="drawer-head">
+      <h3 id="st-h">STATUS</h3>
+      <button class="icon-btn close" data-close aria-label="닫기"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="sub">권지혁의 시스템 창 · 지금까지 읽은 곳의 가장 최근 기록</div>
     <pre id="status-body"></pre>
-    <button id="btn-close-status">닫기</button>
   </div>
 </aside>
 
-<aside id="settings-panel" class="modal" hidden>
-  <div class="modal-card">
-    <h3>⚙ 설정</h3>
-    <div class="set-row">
-      <span class="set-label">진행 방식</span>
-      <div class="seg">
-        <button id="set-auto">자동</button>
-        <button id="set-manual">수동</button>
-      </div>
+<!-- 보기 설정 서랍 -->
+<aside id="settings-panel" class="drawer right" hidden>
+  <div class="drawer-card set-card" role="dialog" aria-modal="true" aria-labelledby="set-h">
+    <div class="drawer-head">
+      <h3 id="set-h">보기 설정</h3>
+      <button class="icon-btn close" data-close aria-label="닫기"><svg class="ic"><use href="#i-x"/></svg></button>
     </div>
-    <div class="set-row">
-      <span class="set-label">테마</span>
-      <div class="seg">
-        <button id="set-dark">다크</button>
-        <button id="set-light">라이트</button>
-      </div>
+
+    <div class="preview" id="set-preview" aria-hidden="true">
+      <div class="bubble narration"><span class="tx">새벽 세 시 십칠 분. 지혁은 모니터 앞에서 깨어 있었다.</span></div>
+      <div class="bubble other"><span class="who">태윤</span><span class="tx">형, 이거 로그인이 안 돼요.</span></div>
+      <div class="bubble aria"><span class="who">아리아</span><span class="tx">당신이 잊은 것들을, 제가 기억하고 있습니다.</span></div>
     </div>
-    <div class="set-row">
-      <span class="set-label">자동 읽기 속도 <em>문장마다 길이에 맞춰 기다립니다</em></span>
-      <div class="seg">
-        <button id="set-speed-fast">빠르게</button>
-        <button id="set-speed-normal">보통</button>
-        <button id="set-speed-slow">천천히</button>
+
+    <section class="set-sec">
+      <h4 class="sec-h">읽기</h4>
+      <div class="set-row">
+        <span class="set-label">진행 방식</span>
+        <div class="seg" data-key="auto">
+          <button data-v="true">자동으로 넘기기</button><button data-v="false">직접 넘기기</button>
+        </div>
       </div>
-    </div>
-    <div class="set-note" id="set-note"></div>
-    <button id="btn-open-cast" style="margin-bottom:9px">등장인물 보기</button>
-    <button id="btn-close-settings">닫기</button>
+      <div class="set-row">
+        <span class="set-label">자동 읽기 속도 <em id="speed-label">보통</em></span>
+        <div class="range-row"><span>느긋하게</span><input type="range" id="set-speed" min="0" max="6" step="1"><span>빠르게</span></div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">보기 방식</span>
+        <div class="seg" data-key="layout">
+          <button data-v="chat">채팅 말풍선</button><button data-v="book">소설 본문</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="set-sec">
+      <h4 class="sec-h">글자</h4>
+      <div class="set-row">
+        <span class="set-label">글꼴</span>
+        <div class="font-grid" id="font-grid"></div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">글자 크기 <em id="size-label">17px</em></span>
+        <div class="range-row">
+          <button class="step" id="size-dec" aria-label="작게">가</button>
+          <input type="range" id="set-size" min="14" max="24" step="1">
+          <button class="step big" id="size-inc" aria-label="크게">가</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">줄 간격</span>
+        <div class="seg" data-key="lh">
+          <button data-v="1.6">좁게</button><button data-v="1.85">보통</button><button data-v="2.1">넓게</button><button data-v="2.4">아주 넓게</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">글 폭</span>
+        <div class="seg" data-key="width">
+          <button data-v="narrow">좁게</button><button data-v="normal">보통</button><button data-v="wide">넓게</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="set-sec">
+      <h4 class="sec-h">화면</h4>
+      <div class="set-row">
+        <span class="set-label">테마</span>
+        <div class="theme-grid" data-key="theme">
+          <button data-v="dark"><i class="sw sw-dark"></i>새벽</button>
+          <button data-v="light"><i class="sw sw-light"></i>낮</button>
+          <button data-v="sepia"><i class="sw sw-sepia"></i>종이</button>
+          <button data-v="black"><i class="sw sw-black"></i>먹</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">삽화 연출</span>
+        <div class="seg" data-key="illus">
+          <button data-v="big">크게 띄웠다 접기</button><button data-v="small">작게만 보기</button>
+        </div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="set-motion"><span>움직임 줄이기 <em>말풍선·삽화 애니메이션을 끕니다</em></span></label>
+      <label class="toggle"><input type="checkbox" id="set-wake"><span>자동 읽기 중 화면 꺼짐 방지 <em>지원하는 브라우저에서만 동작합니다</em></span></label>
+      <button id="btn-fullscreen" class="wide-btn"><svg class="ic"><use href="#i-expand"/></svg>전체 화면 <span class="kbd">F</span></button>
+    </section>
+
+    <section class="set-sec">
+      <h4 class="sec-h">단축키</h4>
+      <dl class="keys">
+        <dt>Space · Enter · →</dt><dd>다음 문장</dd>
+        <dt>1 ~ 4</dt><dd>선택지 고르기</dd>
+        <dt>A</dt><dd>자동 읽기 켜기/끄기</dd>
+        <dt>T · I · S</dt><dd>목차 · 상태창 · 설정</dd>
+        <dt>Esc</dt><dd>창 닫기</dd>
+      </dl>
+    </section>
+
+    <section class="set-sec">
+      <button id="btn-reset-settings" class="wide-btn ghost">설정을 기본값으로</button>
+      <button id="btn-reset-all" class="wide-btn danger">읽은 기록 모두 지우기</button>
+    </section>
   </div>
 </aside>
 
+<!-- 삽화 크게 보기 -->
 <aside id="illus-light" class="modal illus-light" hidden>
-  <figure><img id="illus-light-img" alt="삽화 크게 보기"><figcaption id="illus-light-cap"></figcaption></figure>
+  <figure><img id="illus-light-img" alt=""><figcaption id="illus-light-cap"></figcaption></figure>
 </aside>
 
-<aside id="intro-panel" class="modal intro-panel" hidden>
-  <div class="modal-card intro-card">
-    <h3>어떻게 읽으시겠어요?</h3>
+<!-- 첫 시작: 읽기 방식 고르기 -->
+<aside id="intro-panel" class="modal" hidden>
+  <div class="modal-card intro-card" role="dialog" aria-modal="true" aria-labelledby="intro-h">
+    <h3 id="intro-h">어떻게 읽으시겠어요?</h3>
     <div class="intro-mode">
-      <button id="intro-auto" class="intro-opt on">
-        <b>자동으로 읽기</b><span>선택지가 나올 때까지 글이 알아서 넘어갑니다</span>
-      </button>
-      <button id="intro-manual" class="intro-opt">
-        <b>직접 넘기기</b><span>누르거나 키로 한 장면씩 넘깁니다</span>
-      </button>
+      <button id="intro-auto" class="intro-opt on"><b>자동으로 읽기</b><span>선택지가 나올 때까지 글이 알아서 넘어갑니다</span></button>
+      <button id="intro-manual" class="intro-opt"><b>직접 넘기기</b><span>화면을 누르거나 키를 눌러 한 문장씩 넘깁니다</span></button>
     </div>
     <div id="intro-speed-row">
       <div class="intro-q">읽기 속도는 어느 정도인가요?</div>
-      <button class="intro-opt" id="intro-slow"><b>저는 천천히 읽어요</b><span>문장 사이에 여유 있게 쉽니다</span></button>
+      <button class="intro-opt" id="intro-slow"><b>천천히 읽는 편이에요</b><span>문장 사이에 여유 있게 쉽니다</span></button>
       <button class="intro-opt on" id="intro-normal"><b>보통이에요</b><span>읽을 만큼 머물고 넘어갑니다</span></button>
-      <button class="intro-opt" id="intro-fast"><b>조금 빠르게 읽어요</b><span>술술 넘어갑니다</span></button>
+      <button class="intro-opt" id="intro-fast"><b>빠르게 읽는 편이에요</b><span>술술 넘어갑니다</span></button>
     </div>
-    <div class="intro-note">모드와 속도는 읽는 중에도 설정에서 바꿀 수 있습니다</div>
-    <button id="btn-intro-start" class="primary">읽기 시작</button>
+    <div class="intro-note">글꼴·크기·테마와 속도는 읽는 중에도 상단 ‘설정’에서 바꿀 수 있습니다</div>
+    <button id="btn-intro-start" class="wide-btn primary">읽기 시작</button>
   </div>
 </aside>
 
+<!-- 등장인물 -->
 <aside id="cast-panel" class="modal" hidden>
-  <div class="modal-card cast-card">
-    <h3>등장인물</h3>
+  <div class="modal-card cast-card" role="dialog" aria-modal="true" aria-labelledby="cast-h">
+    <div class="drawer-head">
+      <h3 id="cast-h">등장인물</h3>
+      <button class="icon-btn close" data-close aria-label="닫기"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
     <div id="cast-list"></div>
-    <button id="btn-close-cast">닫기</button>
   </div>
 </aside>
+
+<!-- 확인 창 -->
+<aside id="confirm-panel" class="modal" hidden>
+  <div class="modal-card confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="confirm-msg">
+    <p id="confirm-msg"></p>
+    <div class="confirm-btns">
+      <button id="confirm-no" class="wide-btn ghost">취소</button>
+      <button id="confirm-yes" class="wide-btn primary">확인</button>
+    </div>
+  </div>
+</aside>
+
+<div id="toast" class="toast" role="status" hidden></div>
 
 <script src="novel.js"></script>
 </body>
